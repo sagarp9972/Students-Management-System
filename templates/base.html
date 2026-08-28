@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Student Management System{% endblock %}</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+{% block extra_head %}{% endblock %}
+</head>
+<body class="app-bg{% if current_user.is_authenticated %} role-{{ current_user.role }}{% endif %}">
+
+{% if current_user.is_authenticated %}
+<nav class="navbar navbar-expand-lg sms-navbar sticky-top">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand fw-bold" href="{{ url_for('auth.post_login_redirect') }}">
+      <i class="fa-solid fa-graduation-cap me-2"></i>SMS
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto">
+        {% if current_user.role == 'admin' %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.students_list') }}">Students</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.teachers_list') }}">Teachers</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.employees_dashboard') }}">Employees</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.fees_list') }}">Fees</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Attendance</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('admin.attendance_report') }}">Student Attendance</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.teacher_attendance_report') }}">Teacher Attendance</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.employee_attendance_report') }}">Employee Attendance</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Academics</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('admin.courses_list') }}">Courses</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.departments_list') }}">Departments</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.subjects_list') }}">Subjects</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.exams_list') }}">Examinations</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.timetables_list') }}">Timetable</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Campus</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('admin.notices_list') }}">Notices</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.events_list') }}">Events</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.books_list') }}">Library</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.buses_list') }}">Transport</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.leave_requests_list') }}">Leave Requests</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.reports') }}">Reports</a></li>
+        {% elif current_user.role == 'teacher' %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('teacher.dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('teacher.students_list') }}">Students</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('teacher.attendance_take') }}">Attendance</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('teacher.assignments_list') }}">Assignments</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('teacher.marks_entry') }}">Marks</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">More</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('teacher.materials_list') }}">Study Materials</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('teacher.my_attendance') }}">My Attendance</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('teacher.timetable') }}">Timetable</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('teacher.notices') }}">Notices</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('teacher.transport') }}">Transport</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('teacher.reports') }}">Reports</a></li>
+            </ul>
+          </li>
+        {% else %}
+          {% if current_user.role == 'student' %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('student.dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('student.attendance') }}">Attendance</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('student.assignments') }}">Assignments</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('student.results') }}">Results</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('student.fees') }}">Fees</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">More</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('student.timetable') }}">Timetable</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('student.notices') }}">Notices</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('student.materials_list') }}">Study Materials</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('student.transport') }}">Transport</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('student.leave_requests') }}">Leave</a></li>
+            </ul>
+          </li>
+          {% elif current_user.role == 'employee' %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('employee.dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('employee.attendance') }}">Attendance</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('employee.leave_requests') }}">Leave</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('employee.profile') }}">Profile</a></li>
+          {% endif %}
+        {% endif %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('department.list_departments') }}">Departments</a></li>
+      </ul>
+      <ul class="navbar-nav align-items-lg-center">
+        <li class="nav-item me-2">
+          <button id="darkToggle" class="btn btn-sm btn-outline-secondary" title="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fa-solid fa-circle-user me-1"></i>{{ current_user.full_name }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            {% if current_user.role == 'student' %}
+            <li><a class="dropdown-item" href="{{ url_for('student.profile') }}">Profile</a></li>
+            {% endif %}
+            <li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}">Change Password</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endif %}
+
+<main class="container-fluid px-3 px-lg-4 py-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'danger' else category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>
