@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}My Profile · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-id-card me-2"></i>My Profile</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      {% if employee.user.photo %}
+      <img src="{{ url_for('static', filename=employee.user.photo) }}" class="rounded-circle mx-auto mb-2" style="width:120px;height:120px;object-fit:cover;">
+      {% else %}
+      <i class="fa-solid fa-circle-user mx-auto mb-2" style="font-size:110px;color:var(--sms-muted);"></i>
+      {% endif %}
+      <h5>{{ employee.user.full_name }}</h5>
+      <div class="text-muted">{{ employee.employee_code }}</div>
+      <div class="text-muted small">{{ employee.designation or '-' }}</div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-4">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3"><label class="form-label">Full Name</label><input class="form-control" value="{{ employee.user.full_name }}" disabled></div>
+        <div class="mb-3"><label class="form-label">Email</label><input class="form-control" value="{{ employee.user.email }}" disabled></div>
+        <div class="mb-3"><label class="form-label">Phone</label><input name="phone" class="form-control" value="{{ employee.user.phone or '' }}"></div>
+        <div class="mb-3"><label class="form-label">Address</label><input name="address" class="form-control" value="{{ employee.address or '' }}"></div>
+        <div class="mb-3"><label class="form-label">Update Profile Photo (optional)</label><input type="file" name="photo" class="form-control"></div>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Changes</button>
+      </form>
+    </div>
+    <div class="card p-3 mt-3">
+      <h6>Qualification &amp; Experience</h6>
+      <div class="row text-muted small">
+        <div class="col-6">Department: {{ employee.department.name if employee.department else '-' }}</div>
+        <div class="col-6">Designation: {{ employee.designation or '-' }}</div>
+        <div class="col-6">Qualification: {{ employee.qualification or '-' }}</div>
+        <div class="col-6">Experience: {{ employee.experience_years }} years</div>
+        <div class="col-6">Joining Date: {{ employee.joining_date }}</div>
+        <div class="col-6">Employment Type: {{ employee.employment_type }}</div>
+      </div>
+    </div>
+    <p class="text-muted small mt-2">Salary details are visible to the admin office only. Contact administration for salary queries.</p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-house me-2"></i>Welcome, {{ employee.user.full_name }}</h3>
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ attendance_pct }}%</div><div class="card-label">My Attendance</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ pending_leave }}</div><div class="card-label">Pending Leave Requests</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ employee.designation or '-' }}</div><div class="card-label">Designation</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ employee.department.name if employee.department else '-' }}</div><div class="card-label">Department</div></div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-md-6">
+    <h5 class="section-title">Upcoming Approved Leave</h5>
+    <div class="list-group">
+      {% for l in upcoming_leave %}
+      <div class="list-group-item">{{ l.from_date }} → {{ l.to_date }}<div class="small text-muted">{{ l.reason }}</div></div>
+      {% else %}
+      <p class="text-muted">No upcoming approved leave.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <h5 class="section-title">Announcements</h5>
+    <div class="list-group">
+      {% for n in notices %}
+      <div class="list-group-item"><strong>{{ n.title }}</strong><div class="small text-muted">{{ n.posted_at.strftime('%d %b %Y') }}</div></div>
+      {% else %}
+      <p class="text-muted">No announcements yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
