@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Add Event · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-calendar-days me-2"></i>Add Event</h3>
+<div class="card p-4" style="max-width:600px;">
+<form method="POST">
+  <div class="mb-3"><label class="form-label">Title</label><input name="title" class="form-control" required></div>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Category</label>
+      <select name="category" class="form-select">
+        {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4 mb-3"><label class="form-label">Date</label><input type="date" name="event_date" class="form-control"></div>
+    <div class="col-md-4 mb-3"><label class="form-label">Location</label><input name="location" class="form-control"></div>
+  </div>
+  <div class="mb-3"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save</button>
+  <a href="{{ url_for('department.detail', dept_id=dept.id) }}#events" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

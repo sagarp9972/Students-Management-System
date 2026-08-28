@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if entry else 'Add' }} Timetable Entry · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-calendar-week me-2"></i>{{ 'Edit' if entry else 'Add' }} Timetable Entry</h3>
+<div class="card p-4">
+<form method="POST">
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Day of Week</label>
+      <select name="day_of_week" class="form-select" required>
+        {% for day in ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] %}
+        <option {{ 'selected' if entry and entry.day_of_week==day }}>{{ day }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4 mb-3"><label class="form-label">Period</label><input type="number" name="period" class="form-control" min="1" max="10" value="{{ entry.period if entry else '' }}" required></div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Subject</label>
+      <select name="subject_id" class="form-select">
+        <option value="">--</option>
+        {% for s in subjects %}<option value="{{ s.id }}" {{ 'selected' if entry and entry.subject_id==s.id }}>{{ s.name }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-3"><label class="form-label">Start Time</label><input type="time" name="start_time" class="form-control" value="{{ entry.start_time.strftime('%H:%M') if entry and entry.start_time else '' }}"></div>
+    <div class="col-md-6 mb-3"><label class="form-label">End Time</label><input type="time" name="end_time" class="form-control" value="{{ entry.end_time.strftime('%H:%M') if entry and entry.end_time else '' }}"></div>
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save</button>
+  <a href="{{ url_for('department.detail', dept_id=dept.id) }}#timetable" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

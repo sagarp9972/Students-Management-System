@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Departments · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-building-columns me-2"></i>Departments</h3>
+<div class="row g-3">
+  {% for d in departments %}
+  <div class="col-md-4">
+    <a href="{{ url_for('department.detail', dept_id=d.id) }}" class="text-decoration-none">
+      <div class="card p-3 h-100">
+        <h5 class="mb-1">{{ d.name }}</h5>
+        <div class="text-muted small mb-2">{{ d.course.name }}{% if d.code %} · {{ d.code }}{% endif %}</div>
+        {% if d.about %}<p class="small mb-0">{{ d.about[:120] }}{{ '...' if d.about|length > 120 }}</p>{% endif %}
+      </div>
+    </a>
+  </div>
+  {% else %}
+  <p class="text-muted">No departments added yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

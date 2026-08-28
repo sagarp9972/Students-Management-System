@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ teacher.user.full_name }} · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-chalkboard-user me-2"></i>{{ teacher.user.full_name }}</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      {% if teacher.user.photo %}
+      <img src="{{ url_for('static', filename=teacher.user.photo) }}" class="rounded-circle mx-auto mb-2" style="width:120px;height:120px;object-fit:cover;">
+      {% else %}
+      <i class="fa-solid fa-circle-user mx-auto mb-2" style="font-size:110px;color:var(--sms-muted);"></i>
+      {% endif %}
+      <h5>{{ teacher.user.full_name }}</h5>
+      <div class="text-muted">{{ teacher.teacher_code }}</div>
+      <div class="text-muted small">{{ teacher.designation or '-' }}</div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-3">
+      <table class="table table-borderless mb-0">
+        <tr><th>Qualification</th><td>{{ teacher.qualification or '-' }}</td></tr>
+        <tr><th>Experience</th><td>{{ teacher.experience_years }} years</td></tr>
+        <tr><th>Email</th><td>{{ teacher.user.email }}</td></tr>
+        <tr><th>Phone</th><td>{{ teacher.user.phone or '-' }}</td></tr>
+        <tr><th>Cabin Number</th><td>{{ teacher.cabin_number or '-' }}</td></tr>
+        <tr><th>Office Hours</th><td>{{ teacher.office_hours or '-' }}</td></tr>
+        <tr><th>Subjects Handling</th><td>{{ teacher.subjects|map(attribute='name')|join(', ') or '-' }}</td></tr>
+        <tr><th>Research Areas</th><td>{{ teacher.research_areas or '-' }}</td></tr>
+        <tr><th>Publications</th><td>{{ teacher.publications or '-' }}</td></tr>
+        <tr><th>Certifications</th><td>{{ teacher.certifications or '-' }}</td></tr>
+        <tr><th>Projects</th><td>{{ teacher.projects or '-' }}</td></tr>
+        <tr><th>Awards</th><td>{{ teacher.awards or '-' }}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<a href="{{ url_for('department.detail', dept_id=dept.id) }}#faculty" class="btn btn-outline-secondary mt-3"><i class="fa-solid fa-arrow-left me-1"></i>Back to {{ dept.name }}</a>
+{% endblock %}

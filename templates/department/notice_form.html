@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Add Notice · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-bullhorn me-2"></i>Add Department Notice</h3>
+<div class="card p-4" style="max-width:600px;">
+<form method="POST">
+  <div class="mb-3"><label class="form-label">Title</label><input name="title" class="form-control" required></div>
+  <div class="mb-3"><label class="form-label">Content</label><textarea name="content" class="form-control" rows="4"></textarea></div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Post Notice</button>
+  <a href="{{ url_for('department.detail', dept_id=dept.id) }}#notices" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

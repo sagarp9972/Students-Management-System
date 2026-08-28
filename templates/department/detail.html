@@ -1,1 +1,413 @@
+{% extends "base.html" %}
+{% block title %}{{ dept.name }} · SMS{% endblock %}
+{% block extra_head %}
+<style>
+  .dept-nav { position: sticky; top: 70px; z-index: 5; background: var(--sms-card-bg); border: 1px solid var(--sms-border); border-radius: 12px; padding: .5rem; margin-bottom: 1.5rem; overflow-x: auto; white-space: nowrap; }
+  .dept-nav a { color: var(--sms-text); text-decoration: none; padding: .35rem .8rem; border-radius: 8px; font-size: .85rem; }
+  .dept-nav a:hover { background: var(--sms-navy); color: #fff; }
+  .dept-section { scroll-margin-top: 130px; margin-bottom: 2.2rem; }
+  .dept-section h4 { border-left: 4px solid var(--sms-gold); padding-left: .6rem; margin-bottom: 1rem; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-building-columns me-2"></i>{{ dept.name }}{% if dept.code %} <span class="text-muted small">({{ dept.code }})</span>{% endif %}</h3>
+  <a href="{{ url_for('department.list_departments') }}" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-arrow-left me-1"></i>All Departments</a>
+</div>
 
+<div class="dept-nav">
+  <a href="#overview">Overview</a><a href="#history">History</a><a href="#hod">HOD</a>
+  <a href="#faculty">Faculty</a><a href="#staff">Staff</a><a href="#labs">Labs</a>
+  <a href="#courses">Courses</a><a href="#students">Students</a><a href="#achievements">Achievements</a>
+  <a href="#placements">Placements</a><a href="#events">Events</a><a href="#notices">Notices</a>
+  <a href="#downloads">Downloads</a><a href="#contact">Contact</a>
+</div>
+
+<!-- 1. Overview -->
+<div class="dept-section" id="overview">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Department Overview</h4>
+    {% if can_manage %}<a href="{{ url_for('department.overview_edit', dept_id=dept.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i> Edit</a>{% endif %}
+  </div>
+  <div class="row g-3">
+    <div class="col-6 col-md-3"><div class="stat-card"><div class="card-value">{{ total_students }}</div><div class="card-label">Total Students</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat-card"><div class="card-value">{{ technical_faculty|length }}</div><div class="card-label">Total Faculty</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat-card"><div class="card-value">{{ labs|length }}</div><div class="card-label">Laboratories</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat-card"><div class="card-value">{{ dept.established_year or '-' }}</div><div class="card-label">Established</div></div></div>
+  </div>
+  <div class="card p-3 mt-3">
+    <p><strong>About:</strong> {{ dept.about or 'Not added yet.' }}</p>
+    <p><strong>Vision:</strong> {{ dept.vision or '-' }}</p>
+    <p><strong>Mission:</strong> {{ dept.mission or '-' }}</p>
+    <p class="mb-0"><strong>Objectives:</strong> {{ dept.objectives or '-' }}</p>
+  </div>
+</div>
+
+<!-- 2. History -->
+<div class="dept-section" id="history">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Department History</h4>
+    {% if can_manage %}<a href="{{ url_for('department.overview_edit', dept_id=dept.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i> Edit</a>{% endif %}
+  </div>
+  <div class="card p-3">
+    <p><strong>Growth Timeline:</strong> {{ dept.growth_timeline or '-' }}</p>
+    <p><strong>Major Achievements:</strong> {{ dept.achievements_summary or '-' }}</p>
+    <p><strong>Accreditation:</strong> {{ dept.accreditation_details or '-' }}</p>
+    <p><strong>University Affiliation:</strong> {{ dept.university_affiliation or '-' }}</p>
+    <p class="mb-0"><strong>Milestones:</strong> {{ dept.milestones or '-' }}</p>
+  </div>
+</div>
+
+<!-- 3. HOD -->
+<div class="dept-section" id="hod">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Head of Department</h4>
+    {% if can_manage %}<a href="{{ url_for('department.hod_edit', dept_id=dept.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i> Edit</a>{% endif %}
+  </div>
+  {% if dept.hod_teacher %}
+  <div class="card p-3">
+    <div class="row">
+      <div class="col-md-3 text-center">
+        {% if dept.hod_teacher.user.photo %}
+        <img src="{{ url_for('static', filename=dept.hod_teacher.user.photo) }}" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;">
+        {% else %}
+        <i class="fa-solid fa-circle-user mb-2" style="font-size:90px;color:var(--sms-muted);"></i>
+        {% endif %}
+        <h6>{{ dept.hod_teacher.user.full_name }}</h6>
+      </div>
+      <div class="col-md-9">
+        <p class="mb-1"><strong>Qualification:</strong> {{ dept.hod_teacher.qualification or '-' }}</p>
+        <p class="mb-1"><strong>Experience:</strong> {{ dept.hod_teacher.experience_years }} years</p>
+        <p class="mb-1"><strong>Email:</strong> {{ dept.hod_teacher.user.email }}</p>
+        <p class="mb-1"><strong>Phone:</strong> {{ dept.hod_teacher.user.phone or '-' }}</p>
+        <p class="mb-1"><strong>Cabin Number:</strong> {{ dept.hod_cabin_number or '-' }}</p>
+        <p class="mb-0"><strong>Message from HOD:</strong> {{ dept.hod_message or '-' }}</p>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted">No HOD assigned yet.</p>
+  {% endif %}
+</div>
+
+<!-- 4. Technical Faculty -->
+<div class="dept-section" id="faculty">
+  <h4>Technical Faculty</h4>
+  <div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead><tr><th>Name</th><th>Designation</th><th>Qualification</th><th>Experience</th><th>Email</th><th>Phone</th></tr></thead>
+    <tbody>
+      {% for t in technical_faculty %}
+      <tr>
+        <td><a href="{{ url_for('department.faculty_profile', dept_id=dept.id, teacher_id=t.id) }}">{{ t.user.full_name }}</a></td>
+        <td>{{ t.designation or '-' }}</td>
+        <td>{{ t.qualification or '-' }}</td>
+        <td>{{ t.experience_years }} yrs</td>
+        <td>{{ t.user.email }}</td>
+        <td>{{ t.user.phone or '-' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted py-3">No faculty assigned yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="text-muted small">Faculty are added/edited via Teacher Management (admin).</p>
+</div>
+
+<!-- 5. Non-Technical Staff -->
+<div class="dept-section" id="staff">
+  <h4>Non-Technical Faculty / Staff</h4>
+  <div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead><tr><th>Name</th><th>Position</th><th>Qualification</th><th>Experience</th><th>Contact</th></tr></thead>
+    <tbody>
+      {% for e in non_technical_staff %}
+      <tr>
+        <td>{{ e.user.full_name }}</td>
+        <td>{{ e.designation or '-' }}</td>
+        <td>{{ e.qualification or '-' }}</td>
+        <td>{{ e.experience_years }} yrs</td>
+        <td>{{ e.user.phone or e.user.email }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted py-3">No non-technical staff assigned to this department yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="text-muted small">Staff are added/edited via Employee Management (admin).</p>
+</div>
+
+<!-- 6. Laboratories -->
+<div class="dept-section" id="labs">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Laboratories</h4>
+    {% if can_manage %}<a href="{{ url_for('department.labs_add', dept_id=dept.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Add Lab</a>{% endif %}
+  </div>
+  <div class="row g-3">
+    {% for lab in labs %}
+    <div class="col-md-6">
+      <div class="card p-3">
+        <div class="d-flex justify-content-between">
+          <h6>{{ lab.name }}</h6>
+          {% if can_manage %}
+          <div class="d-flex gap-2">
+            <a href="{{ url_for('department.labs_edit', dept_id=dept.id, lab_id=lab.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+            <form method="POST" action="{{ url_for('department.labs_delete', dept_id=dept.id, lab_id=lab.id) }}" onsubmit="return confirm('Delete this lab?');">
+              <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+        <div class="small text-muted">Incharge: {{ lab.incharge.user.full_name if lab.incharge else '-' }}</div>
+        <div class="small">Systems: {{ lab.num_systems }}</div>
+        <div class="small">Software: {{ lab.software_installed or '-' }}</div>
+        <div class="small">Equipment: {{ lab.equipment_list or '-' }}</div>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No laboratories added yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- 7. Courses -->
+<div class="dept-section" id="courses">
+  <h4>Courses Offered ({{ dept.course.name }})</h4>
+  {% for sem, subs in subjects_by_semester.items() %}
+  <h6 class="mt-3">Semester {{ sem }}</h6>
+  <div class="table-responsive">
+  <table class="table table-sm table-hover align-middle">
+    <thead><tr><th>Subject</th><th>Code</th><th>Credits</th><th>Syllabus</th><th>Outcomes</th>{% if can_manage %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+      {% for s in subs %}
+      <tr>
+        <td>{{ s.name }}</td>
+        <td>{{ s.code or '-' }}</td>
+        <td>{{ s.credit_hours }}</td>
+        <td>{% if s.syllabus_file %}<a href="{{ url_for('static', filename=s.syllabus_file) }}" target="_blank">Download</a>{% else %}-{% endif %}</td>
+        <td>{{ s.outcomes or '-' }}</td>
+        {% if can_manage %}<td><a href="{{ url_for('department.subject_syllabus', dept_id=dept.id, subject_id=s.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a></td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="text-muted">No subjects added for this department yet.</p>
+  {% endfor %}
+</div>
+
+<!-- 8. Students -->
+<div class="dept-section" id="students">
+  <h4>Students</h4>
+  <p>{{ total_students }} student{{ 's' if total_students != 1 }} enrolled.</p>
+  <a href="{{ url_for('department.students_semesters', dept_id=dept.id) }}" class="btn btn-outline-gold btn-sm"><i class="fa-solid fa-user-graduate me-1"></i>View by Semester</a>
+</div>
+
+<!-- 9. Achievements -->
+<div class="dept-section" id="achievements">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Department Achievements</h4>
+    {% if can_manage %}<a href="{{ url_for('department.achievements_add', dept_id=dept.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Add</a>{% endif %}
+  </div>
+  <div class="list-group">
+    {% for a in achievements %}
+    <div class="list-group-item d-flex justify-content-between align-items-start">
+      <div>
+        <strong>{{ a.title }}</strong> <span class="badge text-bg-secondary">{{ a.category }}</span>
+        <div class="small text-muted">{{ a.description or '' }} {{ a.achieved_on or '' }}</div>
+      </div>
+      {% if can_manage %}
+      <form method="POST" action="{{ url_for('department.achievements_delete', dept_id=dept.id, ach_id=a.id) }}" onsubmit="return confirm('Delete this achievement?');">
+        <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+      </form>
+      {% endif %}
+    </div>
+    {% else %}
+    <p class="text-muted">No achievements recorded yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- 10. Placements -->
+<div class="dept-section" id="placements">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Placements</h4>
+    {% if can_manage %}
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('department.placements_edit_stats', dept_id=dept.id) }}" class="btn btn-sm btn-outline-secondary">Edit Stats</a>
+      <a href="{{ url_for('department.placements_add', dept_id=dept.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Add Record</a>
+    </div>
+    {% endif %}
+  </div>
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-md-3"><div class="stat-card"><div class="card-value">₹{{ "%.0f"|format(dept.highest_package) if dept.highest_package else '-' }}</div><div class="card-label">Highest Package</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat-card"><div class="card-value">₹{{ "%.0f"|format(dept.average_package) if dept.average_package else '-' }}</div><div class="card-label">Average Package</div></div></div>
+    <div class="col-md-6"><div class="stat-card"><div class="card-label">Recruiters</div><div class="small">{{ dept.recruiters or '-' }}</div></div></div>
+  </div>
+  <div class="table-responsive">
+  <table class="table table-sm table-hover align-middle">
+    <thead><tr><th>Student</th><th>Company</th><th>Package</th><th>Year</th>{% if can_manage %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+      {% for p in placements %}
+      <tr>
+        <td>{{ p.student.user.full_name if p.student else '-' }}</td>
+        <td>{{ p.company }}</td>
+        <td>₹{{ "%.0f"|format(p.package) if p.package else '-' }}</td>
+        <td>{{ p.year or '-' }}</td>
+        {% if can_manage %}<td>
+          <form method="POST" action="{{ url_for('department.placements_delete', dept_id=dept.id, rec_id=p.id) }}" onsubmit="return confirm('Delete this record?');">
+            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>{% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted py-3">No placement records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- 11. Events -->
+<div class="dept-section" id="events">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Events</h4>
+    {% if can_manage %}<a href="{{ url_for('department.events_add', dept_id=dept.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Add Event</a>{% endif %}
+  </div>
+  <div class="list-group">
+    {% for e in events %}
+    <div class="list-group-item d-flex justify-content-between align-items-start">
+      <div>
+        <strong>{{ e.title }}</strong> <span class="badge text-bg-secondary">{{ e.category }}</span>
+        <div class="small text-muted">{{ e.event_date or '' }} · {{ e.location or '' }}</div>
+      </div>
+      {% if can_manage %}
+      <form method="POST" action="{{ url_for('department.events_delete', dept_id=dept.id, event_id=e.id) }}" onsubmit="return confirm('Delete this event?');">
+        <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+      </form>
+      {% endif %}
+    </div>
+    {% else %}
+    <p class="text-muted">No department events yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- 12. Notices -->
+<div class="dept-section" id="notices">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Notices</h4>
+    {% if can_manage %}<a href="{{ url_for('department.notices_add', dept_id=dept.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Add Notice</a>{% endif %}
+  </div>
+  <div class="list-group">
+    {% for n in notices %}
+    <div class="list-group-item d-flex justify-content-between align-items-start">
+      <div><strong>{{ n.title }}</strong><div class="small text-muted">{{ n.content }} — {{ n.posted_at.strftime('%d %b %Y') }}</div></div>
+      {% if can_manage %}
+      <form method="POST" action="{{ url_for('department.notices_delete', dept_id=dept.id, notice_id=n.id) }}" onsubmit="return confirm('Delete this notice?');">
+        <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+      </form>
+      {% endif %}
+    </div>
+    {% else %}
+    <p class="text-muted">No department notices yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- 13. Downloads -->
+<div class="dept-section" id="downloads">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Downloads</h4>
+    {% if can_manage %}<a href="{{ url_for('department.documents_add', dept_id=dept.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Upload</a>{% endif %}
+  </div>
+  <div class="table-responsive">
+  <table class="table table-sm table-hover align-middle">
+    <thead><tr><th>Title</th><th>Category</th><th>File</th>{% if can_manage %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+      {% for d in documents %}
+      <tr>
+        <td>{{ d.title }}</td>
+        <td>{{ d.category }}</td>
+        <td>{% if d.file_path %}<a href="{{ url_for('static', filename=d.file_path) }}" target="_blank">Download</a>{% else %}-{% endif %}</td>
+        {% if can_manage %}<td>
+          <form method="POST" action="{{ url_for('department.documents_delete', dept_id=dept.id, doc_id=d.id) }}" onsubmit="return confirm('Delete this document?');">
+            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>{% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="text-center text-muted py-3">No documents uploaded yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Timetable (bonus section, admin/HOD only edit) -->
+<div class="dept-section" id="timetable">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Weekly Timetable</h4>
+    {% if can_manage %}<a href="{{ url_for('department.timetable_add', dept_id=dept.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Add Entry</a>{% endif %}
+  </div>
+  <div class="table-responsive">
+  <table class="table table-sm table-hover align-middle">
+    <thead><tr><th>Day</th><th>Period</th><th>Subject</th><th>Time</th>{% if can_manage %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+      {% for t in timetable_entries %}
+      <tr>
+        <td>{{ t.day_of_week }}</td><td>{{ t.period }}</td><td>{{ t.subject.name if t.subject else '-' }}</td>
+        <td>{{ t.start_time or '-' }} - {{ t.end_time or '-' }}</td>
+        {% if can_manage %}<td class="d-flex gap-2">
+          <a href="{{ url_for('department.timetable_edit', dept_id=dept.id, entry_id=t.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+          <form method="POST" action="{{ url_for('department.timetable_delete', dept_id=dept.id, entry_id=t.id) }}" onsubmit="return confirm('Delete this entry?');">
+            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>{% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted py-3">No timetable published yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="dept-section" id="contact">
+  <h4>Contact</h4>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card p-3">
+        <p class="mb-1"><strong>Address:</strong> {{ dept.contact_address or '-' }}</p>
+        <p class="mb-1"><strong>Email:</strong> {{ dept.contact_email or '-' }}</p>
+        <p class="mb-1"><strong>Phone:</strong> {{ dept.contact_phone or '-' }}</p>
+        <p class="mb-0"><strong>Office Hours:</strong> {{ dept.office_hours or '-' }}</p>
+        {% if dept.map_embed_url %}<iframe src="{{ dept.map_embed_url }}" class="w-100 mt-2" height="200" style="border:0;"></iframe>{% endif %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-3">
+        <h6>Send a Message</h6>
+        <form method="POST" action="{{ url_for('department.contact_submit', dept_id=dept.id) }}">
+          <div class="mb-2"><input name="name" class="form-control" placeholder="Your name" required></div>
+          <div class="mb-2"><input type="email" name="email" class="form-control" placeholder="Your email"></div>
+          <div class="mb-2"><textarea name="message" class="form-control" rows="3" placeholder="Message" required></textarea></div>
+          <button class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane me-1"></i>Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% if can_manage and contact_messages %}
+  <h6 class="mt-3">Messages Received</h6>
+  <div class="list-group">
+    {% for m in contact_messages %}
+    <div class="list-group-item"><strong>{{ m.name }}</strong> ({{ m.email or 'no email' }})<div class="small">{{ m.message }}</div><div class="small text-muted">{{ m.submitted_at.strftime('%d %b %Y') }}</div></div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

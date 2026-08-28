@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Edit HOD · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-user-tie me-2"></i>Edit Head of Department</h3>
+<div class="card p-4" style="max-width:600px;">
+<form method="POST">
+  {% if is_admin %}
+  <div class="mb-3">
+    <label class="form-label">HOD (select a teacher in this department)</label>
+    <select name="hod_teacher_id" class="form-select">
+      <option value="">-- None --</option>
+      {% for t in teachers %}<option value="{{ t.id }}" {{ 'selected' if dept.hod_teacher_id == t.id }}>{{ t.user.full_name }}</option>{% endfor %}
+    </select>
+  </div>
+  {% endif %}
+  <div class="mb-3"><label class="form-label">Cabin Number</label><input name="hod_cabin_number" class="form-control" value="{{ dept.hod_cabin_number or '' }}"></div>
+  <div class="mb-3"><label class="form-label">Message from HOD</label><textarea name="hod_message" class="form-control" rows="4">{{ dept.hod_message or '' }}</textarea></div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save</button>
+  <a href="{{ url_for('department.detail', dept_id=dept.id) }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

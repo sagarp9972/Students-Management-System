@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ dept.name }} · Sem {{ semester }} · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-user-graduate me-2"></i>{{ dept.name }} — Semester {{ semester }}</h3>
+  <a href="{{ url_for('department.students_semesters', dept_id=dept.id) }}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i>Back to Semesters</a>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>ID</th><th>Name</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.student_code }}</td>
+      <td>{{ s.user.full_name }}</td>
+      <td><span class="badge {{ 'badge-status-active' if s.status == 'Active' else 'badge-status-inactive' }}">{{ s.status }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center text-muted py-4">No students in this semester yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

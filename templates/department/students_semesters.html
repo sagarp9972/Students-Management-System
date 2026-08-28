@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ dept.name }} Students · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0"><i class="fa-solid fa-user-graduate me-2"></i>{{ dept.name }} — Students by Semester</h3>
+  <a href="{{ url_for('department.detail', dept_id=dept.id) }}#students" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i>Back</a>
+</div>
+<div class="row g-3">
+  {% for sem in semesters %}
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('department.students_semester_view', dept_id=dept.id, sem=sem) }}" class="text-decoration-none">
+      <div class="stat-card text-center">
+        <div class="card-value">Sem {{ sem }}</div>
+        <div class="card-label">{{ counts[sem] }} student{{ 's' if counts[sem] != 1 }}</div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

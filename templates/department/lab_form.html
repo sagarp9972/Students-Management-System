@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if lab else 'Add' }} Laboratory · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-flask me-2"></i>{{ 'Edit' if lab else 'Add' }} Laboratory</h3>
+<div class="card p-4">
+<form method="POST">
+  <div class="mb-3"><label class="form-label">Lab Name</label><input name="name" class="form-control" value="{{ lab.name if lab else '' }}" required></div>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Lab Incharge</label>
+      <select name="incharge_teacher_id" class="form-select">
+        <option value="">--</option>
+        {% for t in teachers %}<option value="{{ t.id }}" {{ 'selected' if lab and lab.incharge_teacher_id==t.id }}>{{ t.user.full_name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6 mb-3"><label class="form-label">Number of Systems</label><input type="number" name="num_systems" class="form-control" value="{{ lab.num_systems if lab else 0 }}" min="0"></div>
+  </div>
+  <div class="mb-3"><label class="form-label">Software Installed</label><textarea name="software_installed" class="form-control" rows="2">{{ lab.software_installed if lab else '' }}</textarea></div>
+  <div class="mb-3"><label class="form-label">Equipment List</label><textarea name="equipment_list" class="form-control" rows="3">{{ lab.equipment_list if lab else '' }}</textarea></div>
+  <div class="mb-3"><label class="form-label">Lab Timetable Notes</label><textarea name="timetable_note" class="form-control" rows="2">{{ lab.timetable_note if lab else '' }}</textarea></div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Lab</button>
+  <a href="{{ url_for('department.detail', dept_id=dept.id) }}#labs" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}
