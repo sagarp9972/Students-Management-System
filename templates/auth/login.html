@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+{% block title %}Sign In · SMS{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241C3B;
+    --gold-l:#F4C36B;
+    --gold-soft:#FBE3AE;
+    --amber:#EE9B4D;
+    --teal:#4FBFA3;
+    --card-bg:#FFF9EF;
+    --glass-bg: rgba(255,255,255,0.14);
+    --glass-border: rgba(255,255,255,0.35);
+    --glass-highlight: rgba(255,255,255,0.55);
+    --text-on-glass:#FFFFFF;
+    --text-on-glass-soft: rgba(255,255,255,0.75);
+    --figure:#2A2454;
+    --figure-2:#372E68;
+    --line: rgba(255,255,255,0.28);
+    --ease: cubic-bezier(.22,.9,.3,1);
+  }
+
+  html, body{ height:100%; }
+  body.login-body{
+    min-height:100vh;
+    overflow:hidden;
+    position:relative;
+    background:
+      url('{{ url_for("static", filename="images/backgrounds/login-bg.jpg") }}') center center / cover no-repeat,
+      linear-gradient(135deg, #1B2A4A 0%, #253A63 45%, #1E7F72 100%);
+  }
+  .login-body main{ padding:0 !important; }
+
+  .scrim{
+    position:fixed; inset:0; z-index:0;
+    background: linear-gradient(180deg, rgba(20,16,15,0.15) 0%, rgba(20,16,15,0.35) 55%, rgba(20,16,15,0.55) 100%);
+  }
+
+  .landing-glow{
+    position:fixed; left:50%; bottom:14%;
+    width:420px; height:220px;
+    transform:translateX(-50%);
+    background: radial-gradient(closest-side, rgba(244,195,107,0.45), transparent 75%);
+    opacity:0; transition: opacity 1.6s ease; z-index:1; pointer-events:none;
+    mix-blend-mode: soft-light;
+  }
+  .landing-glow.show{ opacity:1; }
+
+  .walker{
+    position:fixed; left:50%; bottom:16.4%;
+    width:140px; height:220px; z-index:5;
+    transform: translate(-50%,0) translateX(0);
+    opacity:0; pointer-events:none;
+  }
+  .figure{
+    position:relative; width:100%; height:100%;
+    transform: scaleX(var(--dir, 1));
+    animation: bob 0.55s ease-in-out infinite alternate;
+  }
+  .walker.arrived .figure{ animation-play-state: paused; }
+  @keyframes bob{ from{ transform: scaleX(var(--dir,1)) translateY(0); } to{ transform: scaleX(var(--dir,1)) translateY(-4px); } }
+
+  .leg{
+    position:absolute; left:56px; top:112px; width:12px; height:70px;
+    background: var(--figure); border-radius:6px; transform-origin: top center;
+    animation: leg-swing 0.55s ease-in-out infinite alternate;
+  }
+  .leg.r{ left:74px; background:var(--figure-2); animation-delay:0.275s; }
+  .walker.arrived .leg{ animation-play-state: paused; }
+  @keyframes leg-swing{ from{ transform: rotate(-20deg);} to{ transform: rotate(20deg);} }
+
+  .arm{
+    position:absolute; left:76px; top:58px; width:52px; height:12px;
+    background: var(--figure-2); border-radius:6px; transform-origin: left center; transform: rotate(-18deg);
+  }
+  .arm.upper{ top:46px; transform: rotate(-6deg); }
+
+  .torso{
+    position:absolute; left:52px; top:44px; width:38px; height:74px;
+    background: var(--figure); border-radius:16px 16px 10px 10px;
+  }
+  .torso::after{
+    content:""; position:absolute; left:6px; top:10px; right:6px; height:6px;
+    background: var(--gold-l); border-radius:4px; opacity:0.85;
+  }
+  .head{
+    position:absolute; left:54px; top:14px; width:34px; height:34px;
+    background: var(--figure); border-radius:50%;
+  }
+
+  .mini-card{
+    position:absolute; left:96px; top:74px; width:58px; height:40px;
+    background: var(--card-bg); border-radius:8px; transform: rotate(-8deg);
+    box-shadow: 0 0 18px 4px rgba(244,195,107,0.55);
+    animation: mini-glow 1.6s ease-in-out infinite alternate;
+    opacity:0; transition: opacity 0.2s ease;
+  }
+  .mini-card .ln{ position:absolute; left:8px; right:8px; height:4px; background: rgba(36,28,59,0.18); border-radius:3px; }
+  .mini-card .ln1{ top:10px; }
+  .mini-card .ln2{ top:19px; width:60%; }
+  .mini-card .btn2{ position:absolute; left:8px; right:8px; bottom:6px; height:8px; background: var(--amber); border-radius:4px; opacity:0.9; }
+  @keyframes mini-glow{ from{ box-shadow: 0 0 14px 2px rgba(244,195,107,0.4); } to{ box-shadow: 0 0 24px 7px rgba(244,195,107,0.75); } }
+
+  .login-wrap{
+    position:relative; z-index:10; min-height:100vh;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .stage{ position:relative; width:100%; max-width:420px; min-height:380px; }
+
+  .glass-card{
+    position:relative; display:flex; flex-direction:column;
+    padding:40px 36px 30px;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    backdrop-filter: blur(22px) saturate(140%);
+    border-radius:24px; border: 1px solid var(--glass-border);
+    box-shadow: 0 30px 70px -18px rgba(10,8,30,0.55), inset 0 1px 0 rgba(255,255,255,0.6), inset 0 0 40px rgba(255,255,255,0.05);
+    opacity:0; visibility:hidden; pointer-events:none;
+    transform-origin:center center; max-height:88vh; overflow-y:auto; overflow-x:hidden;
+  }
+  .glass-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  }
+  .glass-card::after{
+    content:""; position:absolute; top:-40%; left:-20%; width:70%; height:180%;
+    background: linear-gradient(115deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 35%, transparent 55%);
+    transform: rotate(8deg); pointer-events:none;
+  }
+  .glass-card::-webkit-scrollbar{ width:6px; }
+  .glass-card::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.3); border-radius:6px; }
+  .glass-card.settled{ animation: settle-pop 0.5s var(--ease); }
+  @keyframes settle-pop{ 0%{ transform:scale(1); } 45%{ transform:scale(1.035); } 100%{ transform:scale(1); } }
+
+  .glass-card h1{
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:26px; text-align:center;
+    margin:0 0 6px; color:var(--text-on-glass); text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    position:relative; z-index:1;
+  }
+  .glass-card .sub{ text-align:center; font-size:13.5px; color:var(--text-on-glass-soft); margin:0 0 24px; position:relative; z-index:1; }
+
+  .glass-field{ margin-bottom:15px; position:relative; z-index:1; }
+  .glass-field label{ display:block; font-size:12px; font-weight:600; color:var(--text-on-glass-soft); margin-bottom:6px; }
+  .glass-field input{
+    width:100%; padding:12px 14px; font-size:14px; font-family:inherit; color:var(--text-on-glass);
+    background: rgba(255,255,255,0.12);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    border:1.5px solid var(--line); border-radius:11px; outline:none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .glass-field input::placeholder{ color: rgba(255,255,255,0.55); }
+  .glass-field input:focus{ border-color:var(--amber); background: rgba(255,255,255,0.2); box-shadow:0 0 0 4px rgba(238,155,77,0.22); }
+
+  .input-wrap{ position:relative; }
+  .input-wrap input{ padding-right:44px; }
+  .toggle-eye{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%); width:32px; height:32px;
+    background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    color:rgba(255,255,255,0.6); border-radius:8px;
+  }
+  .toggle-eye:hover{ color:#fff; background:rgba(255,255,255,0.12); }
+
+  .row-between{
+    position:relative; z-index:1; display:flex; justify-content:space-between; align-items:center;
+    font-size:13px; margin:2px 0 20px; color:var(--text-on-glass-soft);
+  }
+  .row-between label{ display:flex; align-items:center; gap:6px; }
+  .row-between input[type="checkbox"]{ accent-color:var(--amber); width:auto; }
+  .row-between a{ color:var(--gold-l); font-weight:600; text-decoration:none; }
+  .row-between a:hover{ text-decoration:underline; }
+
+  button.glass-primary{
+    width:100%; padding:13px; font-family:'Space Grotesk', sans-serif; font-size:15px; font-weight:600;
+    color:#2A1A05; background: linear-gradient(180deg, var(--gold-soft), var(--gold-l));
+    border:none; border-radius:11px; cursor:pointer; position:relative; z-index:1; overflow:hidden;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 12px 24px -10px rgba(244,195,107,0.65);
+  }
+  button.glass-primary:hover{ transform:translateY(-1px); }
+  button.glass-primary:active{ transform:scale(0.98); }
+
+  .login-flashes{ position:relative; z-index:20; max-width:420px; margin:0 auto; padding-top:16px; }
+
+  @media (max-width:480px){
+    .glass-card{ padding:32px 24px 26px; }
+    .walker{ width:110px; height:172px; bottom:20.4%; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .figure, .leg, .mini-card, .glass-card.settled{ animation:none !important; }
+  }
+</style>
+<script>document.addEventListener('DOMContentLoaded', () => document.body.classList.add('login-body'));</script>
+{% endblock %}
+
+{% block content %}
+<div class="scrim"></div>
+<div class="landing-glow" id="landingGlow"></div>
+
+<div class="walker" id="walker">
+  <div class="figure" id="figure">
+    <div class="leg l"></div>
+    <div class="leg r"></div>
+    <div class="torso"></div>
+    <div class="arm upper"></div>
+    <div class="arm"></div>
+    <div class="head"></div>
+    <div class="mini-card" id="miniCard">
+      <div class="ln ln1"></div>
+      <div class="ln ln2"></div>
+      <div class="btn2"></div>
+    </div>
+  </div>
+</div>
+
+<div class="login-wrap">
+  <div class="stage" id="stage">
+    <form class="glass-card" id="cardLogin" method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <h1>Sign In</h1>
+      <p class="sub">Welcome back — let's get you in.</p>
+
+      <div class="glass-field">
+        <label for="login-user">Username / Email</label>
+        <input type="text" id="login-user" name="identifier" class="first-focus" placeholder="Username or email" autocomplete="username" required value="{{ form.identifier.data or '' }}">
+      </div>
+
+      <div class="glass-field">
+        <label for="login-pass">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="login-pass" name="password" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="toggle-eye" data-target="login-pass" aria-label="Show password">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path class="eye-path" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/>
+              <circle class="eye-pupil" cx="12" cy="12" r="3"/>
+              <line class="eye-slash" x1="3" y1="3" x2="21" y2="21" style="display:none"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="row-between">
+        <label><input type="checkbox" name="remember_me"> Remember Me</label>
+        <a href="{{ url_for('auth.forgot_password') }}">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="glass-primary">Sign in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const walker = document.getElementById('walker');
+  const figure = document.getElementById('figure');
+  const miniCard = document.getElementById('miniCard');
+  const landingGlow = document.getElementById('landingGlow');
+  const cardLogin = document.getElementById('cardLogin');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('.toggle-eye').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      const showing = input.type === 'password';
+      input.type = showing ? 'text' : 'password';
+      btn.querySelector('.eye-slash').style.display = showing ? 'block' : 'none';
+      btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+    });
+  });
+
+  function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
+  function waitTransition(el, prop){
+    return new Promise(res => {
+      function handler(e){
+        if (e.target !== el) return;
+        if (prop && e.propertyName !== prop) return;
+        el.removeEventListener('transitionend', handler);
+        res();
+      }
+      el.addEventListener('transitionend', handler);
+    });
+  }
+  function setDir(dir){ figure.style.setProperty('--dir', dir); }
+
+  async function walkIn(dir){
+    walker.style.transition = 'none';
+    walker.style.opacity = '1';
+    walker.style.transform = `translate(-50%,0) translateX(${dir === 1 ? '-130vw' : '130vw'})`;
+    walker.classList.remove('arrived');
+    void walker.offsetWidth;
+    walker.style.transition = 'transform 3s cubic-bezier(.32,.62,.32,1)';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      walker.style.transform = 'translate(-50%,0) translateX(0)';
+    }));
+    await waitTransition(walker, 'transform');
+    walker.classList.add('arrived');
+  }
+
+  async function walkOut(dir){
+    walker.classList.remove('arrived');
+    walker.style.transition = 'transform 1.2s ease-in, opacity 0.9s ease-in 0.4s';
+    walker.style.transform = `translate(-50%,0) translateX(${dir * 130}vw)`;
+    walker.style.opacity = '0';
+    await waitTransition(walker, 'transform');
+  }
+
+  async function growHandIntoCard(cardEl){
+    cardEl.style.transition = 'none';
+    cardEl.style.visibility = 'visible';
+    cardEl.style.opacity = '1';
+    cardEl.style.transform = 'none';
+    const cardRect = cardEl.getBoundingClientRect();
+    const miniRect = miniCard.getBoundingClientRect();
+    const dx = (miniRect.left + miniRect.width / 2) - (cardRect.left + cardRect.width / 2);
+    const dy = (miniRect.top + miniRect.height / 2) - (cardRect.top + cardRect.height / 2);
+    const scale = Math.max(0.12, miniRect.width / cardRect.width);
+
+    cardEl.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+    miniCard.style.opacity = '0';
+    void cardEl.offsetWidth;
+    cardEl.style.transition = 'transform 0.75s cubic-bezier(.22,.9,.3,1)';
+    requestAnimationFrame(() => { cardEl.style.transform = 'translate(0,0) scale(1)'; });
+    await waitTransition(cardEl, 'transform');
+
+    cardEl.style.pointerEvents = 'auto';
+    cardEl.classList.add('settled');
+    const firstInput = cardEl.querySelector('.first-focus');
+    if (firstInput) firstInput.focus({ preventScroll: true });
+  }
+
+  async function deliver(){
+    miniCard.style.opacity = '1';
+    landingGlow.classList.add('show');
+    const dir = Math.random() < 0.5 ? 1 : -1;
+    setDir(dir);
+    await walkIn(dir);
+    await wait(160);
+    await growHandIntoCard(cardLogin);
+    await wait(220);
+    await walkOut(dir);
+  }
+
+  async function init(){
+    if (reduceMotion){
+      cardLogin.style.visibility = 'visible';
+      cardLogin.style.opacity = '1';
+      cardLogin.style.pointerEvents = 'auto';
+      return;
+    }
+    await deliver();
+  }
+
+  init();
+</script>
+{% endblock %}
