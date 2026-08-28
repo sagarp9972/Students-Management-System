@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --sms-navy: #1B2A4A;
+  --sms-navy-light: #253A63;
+  --sms-gold: #C9962C;
+  --sms-teal: #1E7F72;
+  --sms-bg: #F5F7FA;
+  --sms-card-bg: #FFFFFF;
+  --sms-text: #1B2330;
+  --sms-muted: #6B7688;
+  --sms-border: #E3E7EE;
+  --sms-danger: #C4453B;
+  --sms-success: #1E7F52;
+  --bs-primary: var(--sms-navy);
+  --bs-primary-rgb: 27, 42, 74;
+}
+
+[data-bs-theme="dark"] {
+  --sms-bg: #10151F;
+  --sms-card-bg: #171F2E;
+  --sms-text: #E7EAF0;
+  --sms-muted: #9099AC;
+  --sms-border: #262F42;
+  --sms-navy-light: #24365C;
+}
+
+body {
+  background: var(--sms-bg);
+  color: var(--sms-text);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+body.app-bg {
+  background-color: var(--sms-bg);
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+body.app-bg.role-admin {
+  background-image:
+    linear-gradient(180deg, rgba(16,21,31,0.90), rgba(16,21,31,0.94)),
+    url('/static/images/backgrounds/admin-bg.jpg');
+}
+body.app-bg.role-teacher {
+  background-image:
+    linear-gradient(180deg, rgba(16,21,31,0.90), rgba(16,21,31,0.94)),
+    url('/static/images/backgrounds/teacher-bg.jpg');
+}
+body.app-bg.role-student {
+  background-image:
+    linear-gradient(180deg, rgba(16,21,31,0.90), rgba(16,21,31,0.94)),
+    url('/static/images/backgrounds/student-bg.jpg');
+}
+body.app-bg.role-employee {
+  background-image:
+    linear-gradient(180deg, rgba(16,21,31,0.90), rgba(16,21,31,0.94)),
+    url('/static/images/backgrounds/employee-bg.jpg');
+}
+[data-bs-theme="dark"] body.app-bg.role-admin {
+  background-image:
+    linear-gradient(180deg, rgba(8,11,18,0.94), rgba(8,11,18,0.97)),
+    url('/static/images/backgrounds/admin-bg.jpg');
+}
+[data-bs-theme="dark"] body.app-bg.role-teacher {
+  background-image:
+    linear-gradient(180deg, rgba(8,11,18,0.94), rgba(8,11,18,0.97)),
+    url('/static/images/backgrounds/teacher-bg.jpg');
+}
+[data-bs-theme="dark"] body.app-bg.role-student {
+  background-image:
+    linear-gradient(180deg, rgba(8,11,18,0.94), rgba(8,11,18,0.97)),
+    url('/static/images/backgrounds/student-bg.jpg');
+}
+[data-bs-theme="dark"] body.app-bg.role-employee {
+  background-image:
+    linear-gradient(180deg, rgba(8,11,18,0.94), rgba(8,11,18,0.97)),
+    url('/static/images/backgrounds/employee-bg.jpg');
+}
+
+h1, h2, h3, h4, h5, .navbar-brand, .card-value {
+  font-family: 'Poppins', sans-serif;
+}
+
+.sms-navbar {
+  background: var(--sms-navy);
+  padding: 0.6rem 0;
+}
+.sms-navbar .navbar-brand, .sms-navbar .nav-link {
+  color: #F1F4F9;
+}
+.sms-navbar .nav-link:hover, .sms-navbar .nav-link.active {
+  color: var(--sms-gold);
+}
+.sms-navbar .dropdown-menu {
+  background: var(--sms-navy-light);
+}
+.sms-navbar .dropdown-item {
+  color: #F1F4F9;
+}
+.sms-navbar .dropdown-item:hover {
+  background: var(--sms-navy);
+  color: var(--sms-gold);
+}
+
+.card, .table, .list-group-item {
+  background: var(--sms-card-bg);
+  border-color: var(--sms-border);
+  color: var(--sms-text);
+}
+
+.stat-card {
+  border-radius: 14px;
+  border: 1px solid var(--sms-border);
+  background: var(--sms-card-bg);
+  padding: 1.1rem 1.3rem;
+  height: 100%;
+  border-left: 4px solid var(--sms-gold);
+  transition: transform .15s ease;
+}
+.stat-card:hover { transform: translateY(-2px); }
+.stat-card .card-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--sms-navy);
+}
+[data-bs-theme="dark"] .stat-card .card-value { color: #F1F4F9; }
+.stat-card .card-label {
+  color: var(--sms-muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.stat-card .card-icon {
+  font-size: 1.4rem;
+  color: var(--sms-teal);
+}
+
+.section-title {
+  font-weight: 600;
+  border-left: 4px solid var(--sms-gold);
+  padding-left: .6rem;
+  margin: 1.5rem 0 1rem;
+}
+
+.btn-primary {
+  background: var(--sms-navy);
+  border-color: var(--sms-navy);
+}
+.btn-primary:hover {
+  background: var(--sms-navy-light);
+  border-color: var(--sms-navy-light);
+}
+.btn-outline-gold {
+  color: var(--sms-gold);
+  border: 1px solid var(--sms-gold);
+}
+.btn-outline-gold:hover {
+  background: var(--sms-gold);
+  color: #fff;
+}
+
+.badge-status-active, .badge-present, .badge-paid { background: var(--sms-success); }
+.badge-status-inactive, .badge-absent, .badge-pending { background: var(--sms-danger); }
+.badge-late, .badge-leave, .badge-half-day { background: var(--sms-gold); color:#1B2330; }
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--sms-navy) 0%, var(--sms-navy-light) 60%, var(--sms-teal) 100%);
+  padding: 2rem 1rem;
+}
+.auth-card {
+  background: var(--sms-card-bg);
+  border-radius: 16px;
+  padding: 2.2rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+}
+.auth-card .brand {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: var(--sms-navy);
+  font-size: 1.4rem;
+}
+[data-bs-theme="dark"] .auth-card .brand { color: #F1F4F9; }
+
+.table thead th {
+  background: var(--sms-navy);
+  color: #fff;
+  font-weight: 500;
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.pw-toggle { cursor: pointer; }
