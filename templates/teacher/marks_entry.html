@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Enter Marks · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-marker me-2"></i>Marks Management</h3>
+
+<form method="GET" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <select name="subject_id" class="form-select" onchange="this.form.submit()">
+      <option value="">-- Select subject --</option>
+      {% for s in subjects %}
+      <option value="{{ s.id }}" {{ 'selected' if subject_id == s.id }}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+{% if subject_id %}
+<form method="POST">
+  <input type="hidden" name="subject_id" value="{{ subject_id }}">
+  <div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead><tr><th>Student</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+    <tbody>
+      {% for st in students %}
+      {% set m = existing_map.get(st.id) %}
+      <tr>
+        <td>{{ st.user.full_name }}</td>
+        <td><input type="number" step="0.5" min="0" max="50" name="internal_{{ st.id }}" class="form-control" value="{{ m.internal_marks if m else '' }}"></td>
+        <td><input type="number" step="0.5" min="0" max="100" name="external_{{ st.id }}" class="form-control" value="{{ m.external_marks if m else '' }}"></td>
+        <td>{{ m.total if m else '-' }}</td>
+        <td>{{ m.grade if m else '-' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted py-4">No students found for this subject's department.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Marks</button>
+</form>
+<p class="text-muted small mt-2">Grades: O (90+) · A+ (80+) · A (70+) · B+ (60+) · B (50+) · C (40+) · P (35+) · F (below 35)</p>
+{% endif %}
+{% endblock %}

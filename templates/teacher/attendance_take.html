@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Take Attendance · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-clipboard-check me-2"></i>Daily Attendance</h3>
+
+<form method="GET" class="row g-2 mb-4 align-items-end">
+  <div class="col-md-4">
+    <label class="form-label">Subject</label>
+    <select name="subject_id" class="form-select" onchange="this.form.submit()">
+      <option value="">-- Select subject --</option>
+      {% for s in subjects %}
+      <option value="{{ s.id }}" {{ 'selected' if subject_id == s.id }}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Date</label>
+    <input type="date" name="date" class="form-control" value="{{ selected_date }}" onchange="this.form.submit()">
+  </div>
+</form>
+
+{% if subject_id %}
+<form method="POST">
+  <input type="hidden" name="subject_id" value="{{ subject_id }}">
+  <input type="hidden" name="date" value="{{ selected_date }}">
+  <div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead><tr><th>Student</th><th>Present</th><th>Absent</th><th>Late</th><th>Leave</th></tr></thead>
+    <tbody>
+      {% for st in students %}
+      <tr>
+        <td>{{ st.user.full_name }} <span class="text-muted small">({{ st.student_code }})</span></td>
+        {% set current_status = existing_map.get(st.id, 'Present') %}
+        {% for status in ['Present', 'Absent', 'Late', 'Leave'] %}
+        <td>
+          <input type="radio" name="status_{{ st.id }}" value="{{ status }}" {{ 'checked' if current_status == status }}>
+        </td>
+        {% endfor %}
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted py-4">No students found for this subject's department.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Attendance</button>
+</form>
+{% else %}
+<p class="text-muted">Select a subject to take attendance.</p>
+{% endif %}
+{% endblock %}

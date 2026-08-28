@@ -1,1 +1,35 @@
-
+{% extends "base.html" %}
+{% block title %}Reports · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-chart-column me-2"></i>Reports</h3>
+<div class="row g-3">
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-user-graduate fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Student Report</h6>
+      <a href="{{ url_for('teacher.report_students_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-calendar-check fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Attendance Report</h6>
+      <a href="{{ url_for('teacher.report_attendance_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-award fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Marks Report</h6>
+      <a href="{{ url_for('teacher.report_marks_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-file-pen fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Assignment Report</h6>
+      <a href="{{ url_for('teacher.report_assignments_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

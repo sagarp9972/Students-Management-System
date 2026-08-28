@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Attendance Report · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-file-lines me-2"></i>Attendance Report</h3>
+<form method="GET" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <select name="subject_id" class="form-select" onchange="this.form.submit()">
+      <option value="">-- Select subject --</option>
+      {% for s in subjects %}
+      <option value="{{ s.id }}" {{ 'selected' if subject_id == s.id }}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+{% if subject_id %}
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Date</th><th>Student</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for r in records %}
+    <tr>
+      <td>{{ r.date }}</td>
+      <td>{{ r.student.user.full_name }}</td>
+      <td><span class="badge badge-{{ r.status.lower() }}">{{ r.status }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center text-muted py-4">No attendance records yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="text-muted small">Tip: export monthly/semester summaries via the Reports module (Excel/PDF) on the admin side.</p>
+{% endif %}
+{% endblock %}

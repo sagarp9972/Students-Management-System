@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Submissions · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-inbox me-2"></i>Submissions for "{{ assignment.title }}"</h3>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Student</th><th>Submitted At</th><th>File</th></tr></thead>
+  <tbody>
+    {% for s in submissions %}
+    <tr>
+      <td>{{ s.student.user.full_name }}</td>
+      <td>{{ s.submitted_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+      <td>{% if s.file_path %}<a href="{{ url_for('static', filename=s.file_path) }}" target="_blank">Download</a>{% else %}-{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center text-muted py-4">No submissions yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<a href="{{ url_for('teacher.assignments_list') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i>Back</a>
+{% endblock %}

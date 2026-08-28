@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ student.user.full_name }} · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-id-card me-2"></i>{{ student.user.full_name }}</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      {% if student.user.photo %}
+      <img src="{{ url_for('static', filename=student.user.photo) }}" class="rounded-circle mx-auto mb-2" style="width:120px;height:120px;object-fit:cover;">
+      {% else %}
+      <i class="fa-solid fa-circle-user mx-auto mb-2" style="font-size:110px;color:var(--sms-muted);"></i>
+      {% endif %}
+      <h5>{{ student.user.full_name }}</h5>
+      <div class="text-muted">{{ student.student_code }}</div>
+      <span class="badge {{ 'badge-status-active' if student.status == 'Active' else 'badge-status-inactive' }} mt-2">{{ student.status }}</span>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-3 mb-3">
+      <table class="table table-borderless mb-0">
+        <tr><th>Email</th><td>{{ student.user.email }}</td></tr>
+        <tr><th>Phone</th><td>{{ student.user.phone or '-' }}</td></tr>
+        <tr><th>Semester</th><td>{{ student.semester or '-' }}</td></tr>
+      </table>
+    </div>
+    <div class="card p-3 mb-3">
+      <h6>Marks</h6>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>Subject</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+        <tbody>
+          {% for m in marks %}
+          <tr><td>{{ m.subject.name }}</td><td>{{ m.internal_marks }}</td><td>{{ m.external_marks }}</td><td>{{ m.total }}</td><td>{{ m.grade }}</td></tr>
+          {% else %}
+          <tr><td colspan="5" class="text-muted text-center">No marks recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="card p-3">
+      <h6>Recent Attendance</h6>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>Date</th><th>Subject</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for a in attendance %}
+          <tr><td>{{ a.date }}</td><td>{{ a.subject.name }}</td><td>{{ a.status }}</td></tr>
+          {% else %}
+          <tr><td colspan="3" class="text-muted text-center">No attendance recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<a href="{{ url_for('teacher.students_list') }}" class="btn btn-outline-secondary mt-3"><i class="fa-solid fa-arrow-left me-1"></i>Back</a>
+{% endblock %}

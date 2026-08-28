@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-chalkboard-user me-2"></i>Welcome, {{ teacher.user.full_name }}</h3>
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ subjects|length }}</div><div class="card-label">My Subjects</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ student_count }}</div><div class="card-label">Students in Department</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ teacher.designation or '-' }}</div><div class="card-label">Designation</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ teacher.experience_years }}</div><div class="card-label">Years Experience</div></div>
+  </div>
+</div>
+
+<h5 class="section-title">My Subjects</h5>
+<div class="d-flex flex-wrap gap-2 mb-3">
+  {% for s in subjects %}
+  <span class="badge text-bg-secondary">{{ s.name }} ({{ s.code }})</span>
+  {% else %}
+  <span class="text-muted">No subjects assigned yet.</span>
+  {% endfor %}
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <h5 class="section-title">Recent Assignments</h5>
+    <div class="list-group">
+      {% for a in assignments %}
+      <div class="list-group-item">
+        <strong>{{ a.title }}</strong> — {{ a.subject.name }}
+        <div class="small text-muted">Due: {{ a.due_date or 'No due date' }}</div>
+      </div>
+      {% else %}
+      <p class="text-muted">No assignments uploaded yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <h5 class="section-title">Latest Notices</h5>
+    <div class="list-group">
+      {% for n in notices %}
+      <div class="list-group-item"><strong>{{ n.title }}</strong><div class="small text-muted">{{ n.posted_at.strftime('%d %b %Y') }}</div></div>
+      {% else %}
+      <p class="text-muted">No notices yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
