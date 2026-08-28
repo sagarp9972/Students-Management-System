@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Assignments · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-file-pen me-2"></i>My Assignments</h3>
+<div class="row g-3">
+  {% for a in assignments %}
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6>{{ a.title }}</h6>
+      <div class="text-muted small mb-1">{{ a.subject.name }} · Due: {{ a.due_date or 'No due date' }}</div>
+      {% if a.description %}<p class="small">{{ a.description }}</p>{% endif %}
+      {% if a.attachment %}<a href="{{ url_for('static', filename=a.attachment) }}" target="_blank" class="small">Download attachment</a>{% endif %}
+      {% set sub = my_subs.get(a.id) %}
+      <form method="POST" action="{{ url_for('student.assignment_submit', assignment_id=a.id) }}" enctype="multipart/form-data" class="mt-2">
+        <div class="input-group input-group-sm">
+          <input type="file" name="file" class="form-control" accept=".pdf">
+          <button class="btn btn-primary" type="submit">{{ 'Resubmit' if sub else 'Submit' }}</button>
+        </div>
+        {% if sub %}<div class="small text-success mt-1"><i class="fa-solid fa-check-circle me-1"></i>Submitted {{ sub.submitted_at.strftime('%d %b %Y') }}</div>{% endif %}
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted text-center py-4">No assignments yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

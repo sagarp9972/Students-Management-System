@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}My Profile · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-id-card me-2"></i>My Profile</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      {% if student.user.photo %}
+      <img src="{{ url_for('static', filename=student.user.photo) }}" class="rounded-circle mx-auto mb-2" style="width:120px;height:120px;object-fit:cover;">
+      {% else %}
+      <i class="fa-solid fa-circle-user mx-auto mb-2" style="font-size:110px;color:var(--sms-muted);"></i>
+      {% endif %}
+      <h5>{{ student.user.full_name }}</h5>
+      <div class="text-muted">{{ student.student_code }}</div>
+      <a href="#" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-download me-1"></i>Download ID Card</a>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-4">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-md-6 mb-3"><label class="form-label">Full Name</label><input name="full_name" class="form-control" value="{{ student.user.full_name }}"></div>
+          <div class="col-md-6 mb-3"><label class="form-label">Phone</label><input name="phone" class="form-control" value="{{ student.user.phone or '' }}"></div>
+        </div>
+        <div class="mb-3"><label class="form-label">Email</label><input class="form-control" value="{{ student.user.email }}" disabled></div>
+        <div class="mb-3"><label class="form-label">Address</label><input name="address" class="form-control" value="{{ student.address or '' }}"></div>
+        <div class="row">
+          <div class="col-md-6 mb-3"><label class="form-label">Parent Name</label><input name="parent_name" class="form-control" value="{{ student.parent_name or '' }}"></div>
+          <div class="col-md-6 mb-3"><label class="form-label">Parent Phone</label><input name="parent_phone" class="form-control" value="{{ student.parent_phone or '' }}"></div>
+        </div>
+        <div class="mb-3"><label class="form-label">Update Photo</label><input type="file" name="photo" class="form-control"></div>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Changes</button>
+      </form>
+    </div>
+    <div class="card p-3 mt-3">
+      <h6>Academic Details</h6>
+      <div class="row text-muted small">
+        <div class="col-6">Course: {{ student.course.name if student.course else '-' }}</div>
+        <div class="col-6">Department: {{ student.department.name if student.department else '-' }}</div>
+        <div class="col-6">Semester: {{ student.semester or '-' }}</div>
+        <div class="col-6">Status: {{ student.status }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

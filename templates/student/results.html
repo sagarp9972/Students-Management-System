@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}My Results · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-award me-2"></i>My Results</h3>
+  <a href="{{ url_for('student.marksheet_pdf') }}" class="btn btn-outline-gold"><i class="fa-solid fa-file-pdf me-1"></i>Download Marksheet PDF</a>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Subject</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th><th>Result</th></tr></thead>
+  <tbody>
+    {% for m in marks %}
+    <tr>
+      <td>{{ m.subject.name }}</td>
+      <td>{{ m.internal_marks }}</td>
+      <td>{{ m.external_marks }}</td>
+      <td>{{ m.total }}</td>
+      <td>{{ m.grade }}</td>
+      <td><span class="badge {{ 'badge-paid' if m.result == 'Pass' else 'badge-pending' }}">{{ m.result }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-center text-muted py-4">No results published yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

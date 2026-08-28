@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Notices · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-bullhorn me-2"></i>Notice Board</h3>
+<div class="list-group">
+  {% for n in notices %}
+  <div class="list-group-item">
+    <h6 class="mb-1">{{ n.title }}</h6>
+    <p class="mb-1 text-muted">{{ n.content }}</p>
+    <small class="text-muted">{{ n.posted_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+  </div>
+  {% else %}
+  <p class="text-muted text-center py-4">No notices posted yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Edit Leave Request · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-pen me-2"></i>Edit Leave Request</h3>
+<div class="card p-4" style="max-width:600px;">
+<form method="POST">
+  <div class="row">
+    <div class="col-md-6 mb-3"><label class="form-label">From Date</label><input type="date" name="from_date" class="form-control" value="{{ leave.from_date }}" required></div>
+    <div class="col-md-6 mb-3"><label class="form-label">To Date</label><input type="date" name="to_date" class="form-control" value="{{ leave.to_date }}" required></div>
+  </div>
+  <div class="mb-3"><label class="form-label">Reason</label><textarea name="reason" class="form-control" rows="3" required>{{ leave.reason }}</textarea></div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Changes</button>
+  <a href="{{ url_for('student.leave_requests') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

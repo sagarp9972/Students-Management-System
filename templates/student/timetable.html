@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Timetable · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-calendar-days me-2"></i>Weekly Timetable</h3>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Day</th><th>Period</th><th>Subject</th><th>Time</th></tr></thead>
+  <tbody>
+    {% for t in entries %}
+    <tr>
+      <td>{{ t.day_of_week }}</td>
+      <td>{{ t.period }}</td>
+      <td>{{ t.subject.name if t.subject else '-' }}</td>
+      <td>{{ t.start_time or '-' }} - {{ t.end_time or '-' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center text-muted py-4">No timetable published yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

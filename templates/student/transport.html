@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Transport · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-bus me-2"></i>Campus Transport</h3>
+
+{% if my_bus %}
+<div class="stat-card mb-4" style="max-width:360px;">
+  <div class="card-label">Your Assigned Bus</div>
+  <div class="card-value">Bus {{ my_bus.bus_number }}</div>
+  <div class="text-muted small">{{ my_bus.route or 'Route not set' }}</div>
+</div>
+{% endif %}
+
+<h5 class="section-title">All Routes</h5>
+<div class="row g-3">
+  {% for b in buses %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card p-3">
+      <h6 class="mb-1">Bus {{ b.bus_number }}</h6>
+      <div class="text-muted small">{{ b.route or 'No route set' }}</div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted text-center py-4">No buses published yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

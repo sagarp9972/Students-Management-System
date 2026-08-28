@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Pay Fee · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-indian-rupee-sign me-2"></i>Pay {{ fee.fee_name }}</h3>
+<div class="card p-4" style="max-width:520px;">
+  <div class="mb-3">
+    <div class="d-flex justify-content-between"><span class="text-muted">Amount Due</span><strong>₹{{ "%.0f"|format(fee.remaining) }}</strong></div>
+  </div>
+  <form method="POST">
+    <label class="form-label">Choose a payment method</label>
+    <div class="d-flex gap-3 mb-3">
+      <label class="card p-3 flex-fill text-center" style="cursor:pointer;">
+        <input type="radio" name="method" value="Cash" class="form-check-input mb-2" required>
+        <div><i class="fa-solid fa-money-bill-wave fa-lg mb-1"></i></div>
+        <div>Cash</div>
+        <div class="text-muted small">Pay at college office / bank</div>
+      </label>
+      <label class="card p-3 flex-fill text-center" style="cursor:pointer;">
+        <input type="radio" name="method" value="Online" class="form-check-input mb-2" required>
+        <div><i class="fa-solid fa-credit-card fa-lg mb-1"></i></div>
+        <div>Online</div>
+        <div class="text-muted small">Pay now via the portal</div>
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-paper-plane me-1"></i>Continue</button>
+  </form>
+  <a href="{{ url_for('student.fees') }}" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+  <p class="text-muted small mt-3 mb-0">
+    <strong>Cash:</strong> visit the college office or your bank counter to pay, then the admin will confirm your payment here.<br>
+    <strong>Online:</strong> your payment will be submitted immediately and marked "Awaiting Confirmation" until the admin verifies it.
+  </p>
+</div>
+{% endblock %}

@@ -1,1 +1,38 @@
-
+{% extends "base.html" %}
+{% block title %}My Fees · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-indian-rupee-sign me-2"></i>My Fees</h3>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Fee</th><th>Amount</th><th>Paid</th><th>Remaining</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for f in fees %}
+    <tr>
+      <td>{{ f.fee_name }}</td>
+      <td>₹{{ "%.0f"|format(f.amount) }}</td>
+      <td>₹{{ "%.0f"|format(f.paid_amount) }}</td>
+      <td>₹{{ "%.0f"|format(f.remaining) }}</td>
+      <td>
+        {% if f.is_paid %}
+          <span class="badge badge-paid">Paid</span>
+        {% elif f.is_awaiting_confirmation %}
+          <span class="badge badge-late">Awaiting Confirmation ({{ f.pending_method }})</span>
+        {% else %}
+          <span class="badge badge-pending">Pending</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if not f.is_paid and not f.is_awaiting_confirmation %}
+        <a href="{{ url_for('student.fee_pay', fee_id=f.id) }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-credit-card me-1"></i>Pay Now</a>
+        {% else %}
+        <span class="text-muted small">—</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-center text-muted py-4">No fee records yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
