@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.user.full_name }} · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0"><i class="fa-solid fa-id-badge me-2"></i>{{ employee.user.full_name }}</h3>
+  <button onclick="window.print()" class="btn btn-outline-gold"><i class="fa-solid fa-print me-1"></i>Print</button>
+</div>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      {% if employee.user.photo %}
+      <img src="{{ url_for('static', filename=employee.user.photo) }}" class="rounded-circle mx-auto mb-2" style="width:120px;height:120px;object-fit:cover;">
+      {% else %}
+      <i class="fa-solid fa-circle-user mx-auto mb-2" style="font-size:110px;color:var(--sms-muted);"></i>
+      {% endif %}
+      <h5>{{ employee.user.full_name }}</h5>
+      <div class="text-muted">{{ employee.employee_code }}</div>
+      <div class="text-muted small">{{ employee.designation or '-' }}</div>
+      <span class="badge {{ 'badge-status-active' if employee.status == 'Active' else 'badge-status-inactive' }} mt-2">{{ employee.status }}</span>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-3 mb-3">
+      <h6>Personal &amp; Contact Details</h6>
+      <table class="table table-borderless mb-0">
+        <tr><th>Email</th><td>{{ employee.user.email }}</td></tr>
+        <tr><th>Phone</th><td>{{ employee.user.phone or '-' }}</td></tr>
+        <tr><th>Gender</th><td>{{ employee.user.gender or '-' }}</td></tr>
+        <tr><th>Date of Birth</th><td>{{ employee.user.dob or '-' }}</td></tr>
+        <tr><th>Address</th><td>{{ employee.address or '-' }}</td></tr>
+      </table>
+    </div>
+    <div class="card p-3 mb-3">
+      <h6>Qualification &amp; Experience</h6>
+      <table class="table table-borderless mb-0">
+        <tr><th>Department</th><td>{{ employee.department.name if employee.department else '-' }}</td></tr>
+        <tr><th>Qualification</th><td>{{ employee.qualification or '-' }}</td></tr>
+        <tr><th>Experience</th><td>{{ employee.experience_years }} years</td></tr>
+        <tr><th>Date of Joining</th><td>{{ employee.joining_date }}</td></tr>
+        <tr><th>Employment Type</th><td>{{ employee.employment_type }}</td></tr>
+      </table>
+    </div>
+    <div class="card p-3 mb-3">
+      <h6>Salary Information (Admin Only)</h6>
+      <div class="fw-bold">₹{{ "%.0f"|format(employee.salary) }} / month</div>
+    </div>
+    <div class="card p-3 mb-3">
+      <h6>Recent Attendance</h6>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>Date</th><th>Status</th><th>In</th><th>Out</th></tr></thead>
+        <tbody>
+          {% for a in employee.attendance_records[-10:] %}
+          <tr><td>{{ a.date }}</td><td>{{ a.status }}</td><td>{{ a.check_in or '-' }}</td><td>{{ a.check_out or '-' }}</td></tr>
+          {% else %}
+          <tr><td colspan="4" class="text-muted text-center">No attendance recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="card p-3">
+      <h6>Leave History</h6>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>From</th><th>To</th><th>Reason</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for l in employee.leave_requests %}
+          <tr><td>{{ l.from_date }}</td><td>{{ l.to_date }}</td><td>{{ l.reason }}</td><td>{{ l.status }}</td></tr>
+          {% else %}
+          <tr><td colspan="4" class="text-muted text-center">No leave records yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<a href="{{ url_for('admin.employees_dashboard') }}" class="btn btn-outline-secondary mt-3"><i class="fa-solid fa-arrow-left me-1"></i>Back</a>
+{% endblock %}

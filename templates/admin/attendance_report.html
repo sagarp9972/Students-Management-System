@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Attendance Report · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-file-lines me-2"></i>Attendance Report</h3>
+  <a href="{{ url_for('admin.attendance_export', department_id=department_id, month=month) }}" class="btn btn-outline-gold">
+    <i class="fa-solid fa-file-export me-1"></i>Download (Monthly / Semester)
+  </a>
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <label class="form-label">Department</label>
+    <select name="department_id" class="form-select" onchange="this.form.submit()">
+      <option value="">All Departments</option>
+      {% for d in departments %}
+      <option value="{{ d.id }}" {{ 'selected' if department_id == d.id }}>{{ d.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Month</label>
+    <input type="month" name="month" class="form-control" value="{{ month or '' }}" onchange="this.form.submit()">
+  </div>
+</form>
+
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Date</th><th>Student</th><th>Department</th><th>Subject</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for r in records %}
+    <tr>
+      <td>{{ r.date }}</td>
+      <td>{{ r.student.user.full_name }}</td>
+      <td>{{ r.student.department.name if r.student.department else '-' }}</td>
+      <td>{{ r.subject.name }}</td>
+      <td><span class="badge badge-{{ r.status.lower() }}">{{ r.status }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted py-4">No attendance records match this filter.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="text-muted small">Showing up to 500 most recent matching records. Use the filters above and the Download button for a full monthly or semester export.</p>
+{% endblock %}

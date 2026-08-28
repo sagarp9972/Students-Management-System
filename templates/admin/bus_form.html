@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if bus else 'Add' }} Bus · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-bus me-2"></i>{{ 'Edit' if bus else 'Add' }} Bus</h3>
+<div class="card p-4">
+<form method="POST" enctype="multipart/form-data">
+  <div class="row">
+    <div class="col-md-6 mb-3"><label class="form-label">Bus Number</label><input name="bus_number" class="form-control" value="{{ bus.bus_number if bus else '' }}" required></div>
+    <div class="col-md-6 mb-3"><label class="form-label">Route</label><input name="route" class="form-control" value="{{ bus.route if bus else '' }}" placeholder="e.g. City Center - Campus"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-3"><label class="form-label">Driver Name</label><input name="driver_name" class="form-control" value="{{ bus.driver_name if bus else '' }}"></div>
+    <div class="col-md-6 mb-3"><label class="form-label">Driver Phone</label><input name="driver_phone" class="form-control" value="{{ bus.driver_phone if bus else '' }}"></div>
+  </div>
+  <div class="mb-3"><label class="form-label">Driver Photo (optional)</label><input type="file" name="driver_photo" class="form-control"></div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Bus</button>
+  <a href="{{ url_for('admin.buses_list') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

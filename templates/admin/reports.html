@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Reports · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-chart-column me-2"></i>Generate Reports</h3>
+<p class="text-muted">Export CSV files (open directly in Excel) for any of the reports below.</p>
+<div class="row g-3">
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-user-graduate fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Student Report</h6>
+      <a href="{{ url_for('admin.report_students_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-chalkboard-user fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Teacher Report</h6>
+      <a href="{{ url_for('admin.teachers_export') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+      <a href="{{ url_for('admin.teacher_attendance_report') }}" class="btn btn-sm btn-outline-secondary mt-2">Attendance Report</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-calendar-check fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Attendance Report</h6>
+      <a href="{{ url_for('admin.report_attendance_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-indian-rupee-sign fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Fee Report</h6>
+      <a href="{{ url_for('admin.report_fees_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-award fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Marks Report</h6>
+      <a href="{{ url_for('admin.report_marks_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card p-3 text-center">
+      <i class="fa-solid fa-file-pen fa-2x mb-2" style="color:var(--sms-teal);"></i>
+      <h6>Assignment Report</h6>
+      <a href="{{ url_for('admin.report_assignments_csv') }}" class="btn btn-sm btn-outline-gold mt-2"><i class="fa-solid fa-file-export me-1"></i>Export CSV</a>
+    </div>
+  </div>
+</div>
+<p class="text-muted small mt-4">CSV files open natively in Excel, Google Sheets, and Numbers. PDF report generation (ReportLab) can be added on top of the same query logic — see the Student Marksheet PDF for a working example of the pattern.</p>
+{% endblock %}

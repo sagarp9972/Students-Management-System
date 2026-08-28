@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Employee Attendance Report · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-file-lines me-2"></i>Employee Attendance Report</h3>
+  <a href="{{ url_for('admin.employee_attendance_export', month=month) }}" class="btn btn-outline-gold"><i class="fa-solid fa-file-export me-1"></i>Download (Monthly)</a>
+</div>
+<form method="GET" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <label class="form-label">Month</label>
+    <input type="month" name="month" class="form-control" value="{{ month or '' }}" onchange="this.form.submit()">
+  </div>
+</form>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Date</th><th>Employee</th><th>Status</th><th>Check In</th><th>Check Out</th></tr></thead>
+  <tbody>
+    {% for r in records %}
+    <tr>
+      <td>{{ r.date }}</td>
+      <td>{{ r.employee.user.full_name }}</td>
+      <td><span class="badge badge-{{ r.status.lower().replace(' ', '-') }}">{{ r.status }}</span></td>
+      <td>{{ r.check_in or '-' }}</td>
+      <td>{{ r.check_out or '-' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted py-4">No attendance records match this filter.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

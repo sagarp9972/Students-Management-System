@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ teacher.user.full_name }} · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-chalkboard-user me-2"></i>{{ teacher.user.full_name }}</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      {% if teacher.user.photo %}
+      <img src="{{ url_for('static', filename=teacher.user.photo) }}" class="rounded-circle mx-auto mb-2" style="width:120px;height:120px;object-fit:cover;">
+      {% else %}
+      <i class="fa-solid fa-circle-user mx-auto mb-2" style="font-size:110px;color:var(--sms-muted);"></i>
+      {% endif %}
+      <h5>{{ teacher.user.full_name }}</h5>
+      <div class="text-muted">{{ teacher.teacher_code }}</div>
+      <div class="text-muted small">{{ teacher.designation or '-' }}</div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-3 mb-3">
+      <table class="table table-borderless mb-0">
+        <tr><th>Email</th><td>{{ teacher.user.email }}</td></tr>
+        <tr><th>Phone</th><td>{{ teacher.user.phone or '-' }}</td></tr>
+        <tr><th>Department</th><td>{{ teacher.department.name if teacher.department else '-' }}</td></tr>
+        <tr><th>Qualification</th><td>{{ teacher.qualification or '-' }}</td></tr>
+        <tr><th>Experience</th><td>{{ teacher.experience_years }} years</td></tr>
+        <tr><th>Subjects</th><td>{{ teacher.subjects|map(attribute='name')|join(', ') or '-' }}</td></tr>
+      </table>
+    </div>
+    <div class="card p-3">
+      <h6>Recent Attendance (self-reported)</h6>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>Date</th><th>Status</th><th>Check In</th><th>Check Out</th></tr></thead>
+        <tbody>
+          {% for a in recent_attendance %}
+          <tr><td>{{ a.date }}</td><td>{{ a.status }}</td><td>{{ a.check_in or '-' }}</td><td>{{ a.check_out or '-' }}</td></tr>
+          {% else %}
+          <tr><td colspan="4" class="text-muted text-center">No attendance recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<a href="{{ url_for('admin.teachers_list') }}" class="btn btn-outline-secondary mt-3"><i class="fa-solid fa-arrow-left me-1"></i>Back to list</a>
+{% endblock %}

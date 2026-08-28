@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Examinations · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-file-signature me-2"></i>Examination Module</h3>
+  <a href="{{ url_for('admin.exams_add') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Add Exam</a>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Exam</th><th>Course</th><th>Subject</th><th>Hall</th><th>Date</th><th>Time</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for e in exams %}
+    <tr>
+      <td>{{ e.name }}</td>
+      <td>{{ e.course.name }}</td>
+      <td>{{ e.subject.name if e.subject else '-' }}</td>
+      <td>{{ e.exam_hall or '-' }}</td>
+      <td>{{ e.exam_date or '-' }}</td>
+      <td>{{ e.exam_time or '-' }}</td>
+      <td>
+        <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.exams_edit', exam_id=e.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+        <form method="POST" action="{{ url_for('admin.exams_delete', exam_id=e.id) }}" onsubmit="return confirm('Delete this exam?');">
+          <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+        </form>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center text-muted py-4">No exams scheduled yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

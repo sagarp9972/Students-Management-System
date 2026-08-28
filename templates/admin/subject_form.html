@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if subject else 'Add' }} Subject · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-book-open me-2"></i>{{ 'Edit' if subject else 'Add' }} Subject</h3>
+<div class="card p-4">
+<form method="POST">
+  <div class="row">
+    <div class="col-md-6 mb-3"><label class="form-label">Subject Name</label><input name="name" class="form-control" value="{{ subject.name if subject else '' }}" required></div>
+    <div class="col-md-6 mb-3"><label class="form-label">Subject Code</label><input name="code" class="form-control" value="{{ subject.code if subject else '' }}" placeholder="e.g. CS301"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Department</label>
+      <select name="department_id" class="form-select" required>
+        {% for d in departments %}<option value="{{ d.id }}" {{ 'selected' if subject and subject.department_id==d.id }}>{{ d.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4 mb-3"><label class="form-label">Semester</label><input type="number" name="semester" class="form-control" min="1" max="10" value="{{ subject.semester if subject else '' }}"></div>
+    <div class="col-md-4 mb-3"><label class="form-label">Credit Hours</label><input type="number" name="credit_hours" class="form-control" value="{{ subject.credit_hours if subject else 3 }}" min="1" max="10"></div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Assign Teacher</label>
+    <select name="teacher_id" class="form-select">
+      <option value="">--</option>
+      {% for t in teachers %}<option value="{{ t.id }}" {{ 'selected' if subject and subject.teacher_id==t.id }}>{{ t.user.full_name }}</option>{% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Subject</button>
+  <a href="{{ url_for('admin.subjects_list') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

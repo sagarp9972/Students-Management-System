@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Employee Leave Requests · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-person-walking-arrow-right me-2"></i>Employee Leave Requests</h3>
+  <a href="{{ url_for('admin.employee_leave_add') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Record Leave Request</a>
+</div>
+
+<form method="GET" class="mb-3">
+  <select name="status" class="form-select" style="max-width:220px;" onchange="this.form.submit()">
+    {% for s in ['Pending', 'Approved', 'Rejected', 'All'] %}
+    <option value="{{ s }}" {{ 'selected' if status == s }}>{{ s }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Employee</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for r in requests %}
+    <tr>
+      <td>{{ r.employee.user.full_name }}</td>
+      <td>{{ r.from_date }}</td>
+      <td>{{ r.to_date }}</td>
+      <td>{{ r.reason }}</td>
+      <td><span class="badge {{ 'badge-paid' if r.status == 'Approved' else ('badge-pending' if r.status == 'Rejected' else 'badge-late') }}">{{ r.status }}</span></td>
+      <td>
+        {% if r.status == 'Pending' %}
+        <div class="d-flex gap-2">
+          <form method="POST" action="{{ url_for('admin.employee_leave_decide', req_id=r.id) }}">
+            <input type="hidden" name="decision" value="Approved">
+            <button class="btn btn-sm btn-outline-gold"><i class="fa-solid fa-check me-1"></i>Approve</button>
+          </form>
+          <form method="POST" action="{{ url_for('admin.employee_leave_decide', req_id=r.id) }}">
+            <input type="hidden" name="decision" value="Rejected">
+            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-xmark me-1"></i>Reject</button>
+          </form>
+          <form method="POST" action="{{ url_for('admin.employee_leave_cancel', req_id=r.id) }}">
+            <button class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-ban me-1"></i>Cancel</button>
+          </form>
+        </div>
+        {% else %}
+        <span class="text-muted small">—</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-center text-muted py-4">No leave requests found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

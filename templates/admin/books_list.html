@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Library · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-book-bookmark me-2"></i>Library Module</h3>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('admin.book_issues_list') }}" class="btn btn-outline-gold"><i class="fa-solid fa-right-left me-1"></i>Issues / Returns</a>
+    <a href="{{ url_for('admin.book_issue_add') }}" class="btn btn-outline-gold"><i class="fa-solid fa-hand-holding me-1"></i>Issue Book</a>
+    <a href="{{ url_for('admin.books_add') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Add Book</a>
+  </div>
+</div>
+
+<form method="GET" class="mb-3">
+  <div class="input-group" style="max-width:400px;">
+    <input type="text" name="q" class="form-control" placeholder="Search by title, author or ISBN" value="{{ q }}">
+    <button class="btn btn-outline-secondary" type="submit"><i class="fa-solid fa-search"></i></button>
+  </div>
+</form>
+
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Title</th><th>Author</th><th>ISBN</th><th>Total Copies</th><th>Available</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for b in books %}
+    <tr>
+      <td>{{ b.title }}</td>
+      <td>{{ b.author or '-' }}</td>
+      <td>{{ b.isbn or '-' }}</td>
+      <td>{{ b.total_copies }}</td>
+      <td>{{ b.available_copies }}</td>
+      <td>
+        <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.books_edit', book_id=b.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+        <form method="POST" action="{{ url_for('admin.books_delete', book_id=b.id) }}" onsubmit="return confirm('Delete this book?');">
+          <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+        </form>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-center text-muted py-4">No books found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

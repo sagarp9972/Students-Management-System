@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if course else 'Add' }} Course · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-book me-2"></i>{{ 'Edit' if course else 'Add' }} Course</h3>
+<div class="card p-4">
+<form method="POST">
+  <div class="mb-3"><label class="form-label">Course Name</label><input name="name" class="form-control" value="{{ course.name if course else '' }}" placeholder="e.g. B.E. / B.Tech, MBA, MCA" required></div>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Level</label>
+      <select name="level" id="levelSelect" class="form-select" onchange="toggleFee()">
+        <option value="UG" {{ 'selected' if course and course.level=='UG' }}>Undergraduate (UG)</option>
+        <option value="PG" {{ 'selected' if course and course.level=='PG' }}>Postgraduate (PG)</option>
+      </select>
+    </div>
+    <div class="col-md-4 mb-3"><label class="form-label">Duration (years)</label><input type="number" name="duration_years" class="form-control" value="{{ course.duration_years if course else 4 }}" min="1" max="6"></div>
+    <div class="col-md-4 mb-3" id="feeWrapper">
+      <label class="form-label">Course Fee (₹)</label>
+      <input type="number" name="fee_amount" class="form-control" step="0.01" min="0" value="{{ course.fee_amount if course else '' }}">
+      <div class="form-text" id="feeHint"></div>
+    </div>
+  </div>
+  <p class="text-muted small">Note: Undergraduate courses (B.E./B.Tech) are billed per-Department instead — set the fee on each Department. Postgraduate courses (MBA/MCA) have no departments, so the course fee above applies directly.</p>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Course</button>
+  <a href="{{ url_for('admin.courses_list') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function toggleFee() {
+  const level = document.getElementById('levelSelect').value;
+  const hint = document.getElementById('feeHint');
+  hint.textContent = level === 'UG' ? 'Not used for UG — set fees per Department instead.' : '';
+}
+document.addEventListener('DOMContentLoaded', toggleFee);
+</script>
+{% endblock %}

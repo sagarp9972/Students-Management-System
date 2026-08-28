@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if department else 'Add' }} Department · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-building-columns me-2"></i>{{ 'Edit' if department else 'Add' }} Department</h3>
+<div class="card p-4">
+<form method="POST">
+  <div class="mb-3"><label class="form-label">Department Name</label><input name="name" class="form-control" value="{{ department.name if department else '' }}" placeholder="e.g. Computer Science Engineering" required></div>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Course (UG only)</label>
+      <select name="course_id" class="form-select" required>
+        {% for c in courses %}<option value="{{ c.id }}" {{ 'selected' if department and department.course_id==c.id }}>{{ c.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6 mb-3"><label class="form-label">Department Fee (₹)</label><input type="number" name="fee_amount" class="form-control" step="0.01" min="0" value="{{ department.fee_amount if department else '' }}"></div>
+  </div>
+  <p class="text-muted small">This is the College Fee auto-billed to every student added under this department.</p>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Department</button>
+  <a href="{{ url_for('admin.departments_list') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

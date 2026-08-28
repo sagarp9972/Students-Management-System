@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Subjects · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-book-open me-2"></i>Subject Management</h3>
+  <a href="{{ url_for('admin.subjects_add') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Add Subject</a>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>Code</th><th>Name</th><th>Department</th><th>Semester</th><th>Credit Hrs</th><th>Teacher</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for s in subjects %}
+    <tr>
+      <td>{{ s.code or '-' }}</td>
+      <td>{{ s.name }}</td>
+      <td>{{ s.department.name }}</td>
+      <td>{{ s.semester or '-' }}</td>
+      <td>{{ s.credit_hours }}</td>
+      <td>{{ s.teacher.user.full_name if s.teacher else '-' }}</td>
+      <td>
+        <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.subjects_edit', subject_id=s.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+        <form method="POST" action="{{ url_for('admin.subjects_delete', subject_id=s.id) }}" onsubmit="return confirm('Delete this subject?');">
+          <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+        </form>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center text-muted py-4">No subjects added yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

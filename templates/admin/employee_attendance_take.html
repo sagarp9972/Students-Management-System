@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Employee Attendance · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-clipboard-check me-2"></i>Employee Attendance</h3>
+  <a href="{{ url_for('admin.employee_attendance_report') }}" class="btn btn-outline-gold"><i class="fa-solid fa-file-lines me-1"></i>View Report</a>
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+  <div class="col-md-3">
+    <label class="form-label">Date</label>
+    <input type="date" name="date" class="form-control" value="{{ selected_date }}" onchange="this.form.submit()">
+  </div>
+</form>
+
+<form method="POST">
+  <input type="hidden" name="date" value="{{ selected_date }}">
+  <div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead><tr><th>Employee</th><th>Present</th><th>Absent</th><th>Half Day</th><th>Leave</th><th>Check In</th><th>Check Out</th></tr></thead>
+    <tbody>
+      {% for e in employees %}
+      {% set existing = existing_map.get(e.id) %}
+      <tr>
+        <td>{{ e.user.full_name }} <span class="text-muted small">({{ e.employee_code }})</span></td>
+        {% for status in ['Present', 'Absent', 'Half Day', 'Leave'] %}
+        <td><input type="radio" name="status_{{ e.id }}" value="{{ status }}" {{ 'checked' if (existing.status if existing else 'Present') == status }}></td>
+        {% endfor %}
+        <td><input type="time" name="checkin_{{ e.id }}" class="form-control form-control-sm" value="{{ existing.check_in.strftime('%H:%M') if existing and existing.check_in else '' }}"></td>
+        <td><input type="time" name="checkout_{{ e.id }}" class="form-control form-control-sm" value="{{ existing.check_out.strftime('%H:%M') if existing and existing.check_out else '' }}"></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted py-4">No active employees found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Attendance</button>
+</form>
+{% endblock %}

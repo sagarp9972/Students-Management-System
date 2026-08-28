@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ student.user.full_name }} · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-id-card me-2"></i>{{ student.user.full_name }}</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center">
+      {% if student.user.photo %}
+      <img src="{{ url_for('static', filename=student.user.photo) }}" class="rounded-circle mx-auto mb-2" style="width:120px;height:120px;object-fit:cover;">
+      {% else %}
+      <i class="fa-solid fa-circle-user mx-auto mb-2" style="font-size:110px;color:var(--sms-muted);"></i>
+      {% endif %}
+      <h5>{{ student.user.full_name }}</h5>
+      <div class="text-muted">{{ student.student_code }}</div>
+      <span class="badge {{ 'badge-status-active' if student.status == 'Active' else 'badge-status-inactive' }} mt-2">{{ student.status }}</span>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-3">
+      <table class="table table-borderless mb-0">
+        <tr><th>Email</th><td>{{ student.user.email }}</td></tr>
+        <tr><th>Phone</th><td>{{ student.user.phone or '-' }}</td></tr>
+        <tr><th>Gender</th><td>{{ student.user.gender or '-' }}</td></tr>
+        <tr><th>Date of Birth</th><td>{{ student.user.dob or '-' }}</td></tr>
+        <tr><th>Blood Group</th><td>{{ student.blood_group or '-' }}</td></tr>
+        <tr><th>Address</th><td>{{ student.address or '-' }}</td></tr>
+        <tr><th>Parent</th><td>{{ student.parent_name or '-' }} ({{ student.parent_phone or '-' }})</td></tr>
+        <tr><th>Course</th><td>{{ student.course.name if student.course else '-' }}</td></tr>
+        <tr><th>Department</th><td>{{ student.department.name if student.department else '-' }}</td></tr>
+        <tr><th>Semester</th><td>{{ student.semester or '-' }}</td></tr>
+        <tr><th>Admission Date</th><td>{{ student.admission_date }}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<a href="{{ url_for('admin.students_list') }}" class="btn btn-outline-secondary mt-3"><i class="fa-solid fa-arrow-left me-1"></i>Back to list</a>
+{% endblock %}

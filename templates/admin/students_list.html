@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Students · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-user-graduate me-2"></i>Student Management</h3>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('admin.students_export') }}" class="btn btn-outline-gold"><i class="fa-solid fa-file-export me-1"></i>Export</a>
+    <a href="{{ url_for('admin.students_add') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Add Student</a>
+  </div>
+</div>
+
+<form method="GET" class="mb-3">
+  <div class="input-group" style="max-width:400px;">
+    <input type="text" name="q" class="form-control" placeholder="Search by name, ID or email" value="{{ q }}">
+    <button class="btn btn-outline-secondary" type="submit"><i class="fa-solid fa-search"></i></button>
+  </div>
+</form>
+
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead>
+    <tr>
+      <th>ID</th><th>Name</th><th>Course</th><th>Department</th><th>Sem</th><th>Status</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.student_code }}</td>
+      <td><a href="{{ url_for('admin.students_view', student_id=s.id) }}">{{ s.user.full_name }}</a></td>
+      <td>{{ s.course.name if s.course else '-' }}</td>
+      <td>{{ s.department.name if s.department else '-' }}</td>
+      <td>{{ s.semester or '-' }}</td>
+      <td><span class="badge {{ 'badge-status-active' if s.status == 'Active' else 'badge-status-inactive' }}">{{ s.status }}</span></td>
+      <td class="d-flex gap-2">
+        <a href="{{ url_for('admin.students_view', student_id=s.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-eye"></i></a>
+        <a href="{{ url_for('admin.students_edit', student_id=s.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+        <form method="POST" action="{{ url_for('admin.students_delete', student_id=s.id) }}" onsubmit="return confirm('Delete this student?');">
+          <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center text-muted py-4">No students found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

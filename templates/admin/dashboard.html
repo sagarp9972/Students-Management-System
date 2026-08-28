@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-gauge me-2"></i>Admin Dashboard</h3>
+
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="card-icon mb-2"><i class="fa-solid fa-user-graduate"></i></div>
+      <div class="card-value">{{ total_students }}</div>
+      <div class="card-label">Total Students</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="card-icon mb-2"><i class="fa-solid fa-chalkboard-user"></i></div>
+      <div class="card-value">{{ total_teachers }}</div>
+      <div class="card-label">Total Teachers</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="card-icon mb-2"><i class="fa-solid fa-building-columns"></i></div>
+      <div class="card-value">{{ total_branches }}</div>
+      <div class="card-label">Total Branches</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="card-icon mb-2"><i class="fa-solid fa-layer-group"></i></div>
+      <div class="card-value">{{ total_classes }}</div>
+      <div class="card-label">Total Classes</div>
+    </div>
+  </div>
+</div>
+
+<h5 class="section-title">Department-wise Students</h5>
+<div class="row g-3">
+  {% for name, count in dept_counts %}
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="card-value">{{ count }}</div>
+      <div class="card-label">{{ name }}</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12 text-muted">No departments added yet.</div>
+  {% endfor %}
+</div>
+
+<div class="row mt-2">
+  <div class="col-12">
+    <a href="{{ url_for('admin.courses_list') }}" class="btn btn-outline-gold">
+      <i class="fa-solid fa-book me-1"></i>Total Courses ({{ total_courses }})
+    </a>
+  </div>
+</div>
+
+<h5 class="section-title">Course-wise Students</h5>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="stat-card"><div class="card-value">{{ ug_count }}</div><div class="card-label">Undergraduate (B.E. / B.Tech)</div></div>
+  </div>
+  <div class="col-md-6">
+    <div class="stat-card"><div class="card-value">{{ pg_count }}</div><div class="card-label">Postgraduate (MBA / MCA)</div></div>
+  </div>
+</div>
+
+<h5 class="section-title"><i class="fa-solid fa-indian-rupee-sign me-1"></i>Fees Overview</h5>
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">₹{{ "%.0f"|format(total_fee_collected) }}</div><div class="card-label">Fees Collected</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ students_fully_paid }}</div><div class="card-label">Fully Paid Students</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ students_pending_fees }}</div><div class="card-label">Students with Pending Fees</div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card"><div class="card-value">{{ exam_fee_paid }} / {{ exam_fee_pending }}</div><div class="card-label">Exam Fee Paid / Pending</div></div>
+  </div>
+</div>
+<div class="mt-2">
+  <a href="{{ url_for('admin.fees_add') }}" class="btn btn-outline-gold btn-sm"><i class="fa-solid fa-plus me-1"></i>Add Fee Type</a>
+</div>
+
+<h5 class="section-title">Dashboard Charts</h5>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card p-3"><h6>Student Growth</h6><canvas id="growthChart" height="180"></canvas></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3"><h6>Attendance Percentage</h6><canvas id="attendanceChart" height="180"></canvas></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3"><h6>Fee Collection</h6><canvas id="feeChart" height="180"></canvas></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3"><h6>Course-wise Students</h6><canvas id="courseChart" height="180"></canvas></div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"></script>
+<script>
+const growthLabels = {{ student_growth|map(attribute=0)|list|tojson }};
+const growthData = {{ student_growth|map(attribute=1)|list|tojson }};
+new Chart(document.getElementById('growthChart'), {
+  type: 'line',
+  data: { labels: growthLabels, datasets: [{ label: 'New Students', data: growthData, borderColor: '#C9962C', tension: .3 }] },
+  options: { plugins: { legend: { display: false } } }
+});
+
+new Chart(document.getElementById('attendanceChart'), {
+  type: 'doughnut',
+  data: { labels: ['Present', 'Absent/Other'], datasets: [{ data: [{{ attendance_pct }}, {{ 100 - attendance_pct }}], backgroundColor: ['#1E7F72', '#E3E7EE'] }] },
+});
+
+new Chart(document.getElementById('feeChart'), {
+  type: 'bar',
+  data: { labels: ['Expected', 'Collected'], datasets: [{ label: 'Fees (₹)', data: [{{ total_fee_expected }}, {{ total_fee_collected }}], backgroundColor: ['#1B2A4A', '#C9962C'] }] },
+  options: { plugins: { legend: { display: false } } }
+});
+
+const courseLabels = {{ course_wise|map(attribute=0)|list|tojson }};
+const courseData = {{ course_wise|map(attribute=1)|list|tojson }};
+new Chart(document.getElementById('courseChart'), {
+  type: 'pie',
+  data: { labels: courseLabels, datasets: [{ data: courseData, backgroundColor: ['#1B2A4A', '#C9962C', '#1E7F72', '#C4453B'] }] },
+});
+</script>
+{% endblock %}

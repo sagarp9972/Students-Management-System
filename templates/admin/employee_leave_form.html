@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Record Leave Request · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-person-walking-arrow-right me-2"></i>Record Leave Request</h3>
+<div class="card p-4" style="max-width:600px;">
+<form method="POST">
+  <div class="mb-3">
+    <label class="form-label">Employee</label>
+    <select name="employee_id" class="form-select" required>
+      {% for e in employees %}<option value="{{ e.id }}">{{ e.user.full_name }} ({{ e.employee_code }})</option>{% endfor %}
+    </select>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-3"><label class="form-label">From Date</label><input type="date" name="from_date" class="form-control" required></div>
+    <div class="col-md-6 mb-3"><label class="form-label">To Date</label><input type="date" name="to_date" class="form-control" required></div>
+  </div>
+  <div class="mb-3"><label class="form-label">Reason</label><textarea name="reason" class="form-control" rows="3" required></textarea></div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Submit</button>
+  <a href="{{ url_for('admin.employee_leave_list') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

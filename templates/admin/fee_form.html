@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Add Fee · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-indian-rupee-sign me-2"></i>Add Fee</h3>
+<div class="card p-4">
+<form method="POST">
+  <div class="mb-3">
+    <label class="form-label">Student</label>
+    <select name="student_id" class="form-select" required>
+      {% for s in students %}<option value="{{ s.id }}">{{ s.user.full_name }} ({{ s.student_code }})</option>{% endfor %}
+    </select>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-3"><label class="form-label">Fee Name</label><input name="fee_name" class="form-control" placeholder="e.g. College Fee, Exam Fee" required></div>
+    <div class="col-md-4 mb-3"><label class="form-label">Amount (₹)</label><input type="number" name="amount" class="form-control" step="0.01" min="0" required></div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-3"><label class="form-label">Start Date</label><input type="date" name="start_date" class="form-control"></div>
+    <div class="col-md-4 mb-3"><label class="form-label">End Date</label><input type="date" name="end_date" class="form-control"></div>
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Fee</button>
+  <a href="{{ url_for('admin.fees_list') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}

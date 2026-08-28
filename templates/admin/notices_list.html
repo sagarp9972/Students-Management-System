@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Notices · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-bullhorn me-2"></i>Notice Board</h3>
+  <a href="{{ url_for('admin.notices_add') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Add Notice</a>
+</div>
+<div class="list-group">
+  {% for n in notices %}
+  <div class="list-group-item d-flex justify-content-between align-items-start">
+    <div>
+      <h6 class="mb-1">{{ n.title }}</h6>
+      <p class="mb-1 text-muted">{{ n.content }}</p>
+      <small class="text-muted">{{ n.posted_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+    </div>
+    <form method="POST" action="{{ url_for('admin.notices_delete', notice_id=n.id) }}" onsubmit="return confirm('Delete this notice?');" class="d-flex gap-2">
+      <a href="{{ url_for('admin.notices_edit', notice_id=n.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+      <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+    </form>
+  </div>
+  {% else %}
+  <p class="text-muted text-center py-4">No notices posted yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

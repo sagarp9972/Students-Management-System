@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ course.name }} · Sem {{ semester }} · SMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-user-graduate me-2"></i>{{ course.name }} — Semester {{ semester }}</h3>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('admin.students_add', course_id=course.id, semester=semester) }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Add Student</a>
+    <a href="{{ url_for('admin.courses_view', course_id=course.id) }}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i>Back to Semesters</a>
+  </div>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.student_code }}</td>
+      <td><a href="{{ url_for('admin.students_view', student_id=s.id) }}">{{ s.user.full_name }}</a></td>
+      <td>{{ s.user.email }}</td>
+      <td><span class="badge {{ 'badge-status-active' if s.status == 'Active' else 'badge-status-inactive' }}">{{ s.status }}</span></td>
+      <td class="d-flex gap-2">
+        <a href="{{ url_for('admin.students_view', student_id=s.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-eye"></i></a>
+        <a href="{{ url_for('admin.students_edit', student_id=s.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></a>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted py-4">No students in this semester yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
