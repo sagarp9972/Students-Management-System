@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+venv/
+.env
+sms.db
+static/uploads/*
+!static/uploads/.gitkeep
