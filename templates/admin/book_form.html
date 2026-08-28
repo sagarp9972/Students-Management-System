@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if book else 'Add' }} Book · SMS{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-book-bookmark me-2"></i>{{ 'Edit' if book else 'Add' }} Book</h3>
+<div class="card p-4">
+<form method="POST">
+  <div class="mb-3"><label class="form-label">Title</label><input name="title" class="form-control" value="{{ book.title if book else '' }}" required></div>
+  <div class="row">
+    <div class="col-md-4 mb-3"><label class="form-label">Author</label><input name="author" class="form-control" value="{{ book.author if book else '' }}"></div>
+    <div class="col-md-4 mb-3"><label class="form-label">ISBN</label><input name="isbn" class="form-control" value="{{ book.isbn if book else '' }}"></div>
+    <div class="col-md-4 mb-3"><label class="form-label">Total Copies</label><input type="number" name="total_copies" class="form-control" min="1" value="{{ book.total_copies if book else 1 }}"></div>
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>Save Book</button>
+  <a href="{{ url_for('admin.books_list') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+</div>
+{% endblock %}
